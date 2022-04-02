@@ -1,7 +1,8 @@
 import {SiloAmmo, SiloThing} from "./SiloAimer";
 import {Button, Entity, Game, System} from "lagom-engine";
-import {Rocket} from "./Rocket";
+import {Missile, Rocket} from "./Rocket";
 import {CompletedRocket} from "./typing/Selection";
+import {RocketType} from "./LD50";
 
 export class SiloShooter extends System<[SiloThing , SiloAmmo]>
 {
@@ -12,9 +13,9 @@ export class SiloShooter extends System<[SiloThing , SiloAmmo]>
         this.runOnEntities((entity: Entity, silo: SiloThing, ammo: SiloAmmo) => {
 
             if (Game.mouse.isButtonReleased(Button.LEFT) && ammo.hasRocket) {
-                this.getScene().addEntity(new Rocket(entity.transform.getGlobalPosition().x,
-                                                     entity.transform.getGlobalPosition().y,
-                                                     5));
+                const rocket = this.getScene().addEntity(
+                    new Rocket(entity.transform.getGlobalPosition().x, entity.transform.getGlobalPosition().y, 5, ammo.rocket));
+
 
                 const storedRockets = this.getScene().entities.filter(entity => entity.getComponent(CompletedRocket) != null);
                 if (storedRockets.length > 0)

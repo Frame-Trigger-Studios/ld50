@@ -18,6 +18,7 @@ import {Silo} from "./SiloAimer";
 import {EARTH_X, EARTH_Y, Layers} from "./LD50";
 import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
 import {DestroyMeNextFrame} from "./DestroyMeNextFrame";
+import {Missile} from "./Rocket";
 
 export class Force extends Component
 {
@@ -181,10 +182,16 @@ export class Asteroid extends Entity
                 pushUs(caller.getEntity(), other.getEntity());
             }
 
+
+
             if (other.layer === Layers.Ship) {
+                const missile = other.getEntity().getComponent<Missile>(Missile);
+                if (!missile) {
+                    return;
+                }
                 const explosion = other.getEntity().addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
                     layer: Layers.Explosion,
-                    radius: 30,
+                    radius: missile.explosionRadius,
                     xOff: 0,
                     yOff: 0
                 }));

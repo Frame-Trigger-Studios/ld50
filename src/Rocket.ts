@@ -1,36 +1,41 @@
 import {
     BodyType,
     CircleCollider,
-    CollisionSystem, Component,
+    CollisionSystem,
+    Component,
     Entity,
-    Game, Log,
+    Game,
     MathUtil,
     RenderCircle,
     Rigidbody,
-    SimplePhysicsBody,
-    Timer
+    SimplePhysicsBody
 } from "lagom-engine";
 import {Force} from "./Physics";
-import {EARTH_X, EARTH_Y, Layers} from "./LD50";
+import {EARTH_X, EARTH_Y, Layers, RocketType} from "./LD50";
 import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
+
+const SMALL_MISSILE_RADIUS = 30;
+const BIG_MISSILE_RADIUS = 75;
+const SMALL_PASSENGER_COUNT = 100;
+const BIG_PASSENGER_COUNT = 100;
 
 export class PassengerShip extends Component {
 
-    constructor(capacity: number) {
+    constructor(public capacity: number) {
         super();
     }
 }
 
 export class Missile extends Component {
 
-    constructor(explosionRadius: number) {
+    constructor(public explosionRadius: number) {
         super();
     }
 }
 
 export class Rocket extends Entity {
 
-    constructor(x: number, y: number, readonly speed: number)
+    constructor(x: number, y: number, readonly speed: number, readonly rocketType: RocketType)
     {
         super("rocket", x, y);
     }
@@ -38,6 +43,16 @@ export class Rocket extends Entity {
     onAdded()
     {
         super.onAdded();
+
+        if (this.rocketType == RocketType.MISSILE) {
+            this.addComponent(new Missile(SMALL_MISSILE_RADIUS));
+        } else if (this.rocketType == RocketType.ICBM) {
+            this.addComponent(new Missile(BIG_MISSILE_RADIUS));
+        } else if (this.rocketType == RocketType.PASSENGER) {
+            this.addComponent(new PassengerShip(SMALL_PASSENGER_COUNT));
+        } else if (this.rocketType == RocketType.STARSHIP) {
+            this.addComponent(new PassengerShip(BIG_PASSENGER_COUNT));
+        }
 
         const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());
         const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y,
