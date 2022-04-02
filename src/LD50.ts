@@ -13,10 +13,12 @@ import {RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
+import {SiloShooter} from "./SiloShooter";
 
 export enum Layers
 {
     Asteroid,
+    Rocket,
     Earth,
     Ship,
     Explosion,
@@ -34,6 +36,7 @@ const matrix = new CollisionMatrix();
 matrix.addCollision(Layers.Asteroid, Layers.Asteroid);
 matrix.addCollision(Layers.Asteroid, Layers.Earth);
 matrix.addCollision(Layers.Asteroid, Layers.Ship);
+matrix.addCollision(Layers.Rocket, Layers.Asteroid);
 matrix.addCollision(Layers.Ship, Layers.Earth);
 matrix.addCollision(Layers.Ship, Layers.Ship);
 matrix.addCollision(Layers.Explosion, Layers.Ship);
@@ -55,6 +58,7 @@ class MainScene extends Scene
         const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
+        this.addSystem(new SiloShooter());
 
         if (LD50.debug)
         {
@@ -63,8 +67,6 @@ class MainScene extends Scene
 
         this.addSystem(new TypingSystem());
 
-        this.addEntity(new Earth("earth", 213, 120));
-        this.addEntity(new GameManager("Game Manager"));
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
 

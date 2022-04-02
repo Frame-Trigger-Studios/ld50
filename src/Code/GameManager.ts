@@ -64,7 +64,7 @@ export class GameManagerSystem extends System<[GameData]> {
 
         const variance = ((Math.random() * Math.PI/2) - Math.PI/4);
         const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y) + variance;
-        const dir = MathUtil.lengthDirXY(0.005, -angleToEarth)
+        const dir = MathUtil.lengthDirXY(0.005, -angleToEarth);
         const asteroid = new Asteroid(x, y, radius, dir, initialVelocity);
 
         scene.addEntity(asteroid);
