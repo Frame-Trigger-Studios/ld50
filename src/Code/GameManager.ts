@@ -10,7 +10,7 @@ export class GameManager extends Entity {
     }
 }
 
-const asteroidSpawnRate = 5000;
+const asteroidSpawnRate = 500;
 
 export class GameData extends Component {
     public elapsedTime = 0;

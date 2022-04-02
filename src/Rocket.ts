@@ -42,6 +42,5 @@ export class Rocket extends Entity {
             xOff: 0,
             yOff: 0
         }));
-
     }
 }
