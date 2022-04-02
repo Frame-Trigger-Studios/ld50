@@ -5,10 +5,13 @@ import {
     Component,
     Entity,
     Game,
+    Log,
     MathUtil,
     RenderCircle,
     Rigidbody,
-    SimplePhysicsBody
+    SimplePhysicsBody,
+    Sprite,
+    Timer
 } from "lagom-engine";
 import {Force} from "./Physics";
 import {EARTH_X, EARTH_Y, Layers, RocketType} from "./LD50";
@@ -56,14 +59,17 @@ export class Rocket extends Entity {
 
         const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());
         const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y,
-                                                  mousePos.x, mousePos.y);
+            mousePos.x, mousePos.y);
         const velocity = MathUtil.lengthDirXY(0.1, -direction);
 
         this.addComponent(new OffScreenDestroyable());
-        this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0xAA00FF));
+        // this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0xAA00FF));
         this.addComponent(new Rigidbody(BodyType.Discrete));
         this.addComponent(new Force(velocity));
         this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
+        // TODO change the 3 to the rocketType
+        const texture = this.getScene().game.getResource("rockets").texture(3, 0);
+        this.addComponent(new Sprite(texture, {xAnchor: 0.5, yAnchor: 0.5, rotation: -direction + MathUtil.degToRad(90)}));
 
         const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
             layer: Layers.Ship,
