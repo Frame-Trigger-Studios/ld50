@@ -1,4 +1,4 @@
-import {Component, Entity, LagomType, MathUtil, Scene, System, Vector} from "lagom-engine";
+import {Component, Entity, LagomType, MathUtil, Scene, System} from "lagom-engine";
 import {GAME_HEIGHT, GAME_WIDTH, EARTH_X, EARTH_Y} from "../LD50";
 import {Asteroid} from "../Physics";
 
@@ -12,7 +12,7 @@ export class GameManager extends Entity {
 
 export class GameData extends Component {
     public elapsedTime = 0;
-    public msUntilNextAsteroid = 500;
+    public msUntilNextAsteroid = 5000;
 }
 
 export class GameManagerSystem extends System<[GameData]> {
@@ -33,7 +33,7 @@ export class GameManagerSystem extends System<[GameData]> {
             gameData.msUntilNextAsteroid -= delta;
             if (gameData.msUntilNextAsteroid <= 0) {
                 this.spawnAsteroid(this.getScene());
-                gameData.msUntilNextAsteroid = 500;
+                gameData.msUntilNextAsteroid = 5000;
             }
         });
     }
@@ -60,12 +60,14 @@ export class GameManagerSystem extends System<[GameData]> {
         }
 
         const radius = 1 + (Math.random() * 4);
-        const initialVelocity = Math.random() * 0.00001;
+        const linearDrag = Math.random() * 0.00001;
+        // const speed = Math.random() * 0.01;
+        const speed = 0.005;
 
         const variance = ((Math.random() * Math.PI/2) - Math.PI/4);
         const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y) + variance;
-        const dir = MathUtil.lengthDirXY(0.005, -angleToEarth)
-        const asteroid = new Asteroid(x, y, radius, dir, initialVelocity);
+        const dir = MathUtil.lengthDirXY(speed, -angleToEarth);
+        const asteroid = new Asteroid(x, y, radius, dir, linearDrag);
 
         scene.addEntity(asteroid);
     }
