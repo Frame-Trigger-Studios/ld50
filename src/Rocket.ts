@@ -48,7 +48,7 @@ export class Rocket extends Entity {
         const velocity = MathUtil.lengthDirXY(0.1, -direction);
 
         this.addComponent(new OffScreenDestroyable());
-        this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0xAA00FF));
+        // this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0xAA00FF));
         this.addComponent(new Rigidbody(BodyType.Discrete));
         this.addComponent(new Force(velocity));
         this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
