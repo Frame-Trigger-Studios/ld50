@@ -9,6 +9,7 @@ import {
     System,
     Vector
 } from "lagom-engine";
+import {EARTH_X, EARTH_Y} from "./LD50";
 
 const pullPoint = new Vector(213, 120);
 
@@ -84,7 +85,7 @@ export class Asteroid extends Entity
 
         this.addComponent(new RenderCircle(0, 0, 10, 0x140000));
         this.addComponent(new PhysicsMe());
-        this.addComponent(new Force(new Vector(0.01, 0)));
+        this.addComponent(new Force(new Vector( 0.01, 0)));
         this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
         this.addComponent(new Rigidbody(BodyType.Discrete));
     }

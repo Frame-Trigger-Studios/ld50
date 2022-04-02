@@ -31,18 +31,17 @@ class MainScene extends Scene
     {
         super.onAdded();
 
-        this.addSystem(new PhysicsEngine());
-        this.addSystem(new SimplePhysics());
-
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new Asteroid(10, 19));
         this.addEntity(new GameManager("Game Manager"));
 
         this.addSystem(new PhysicsEngine());
-        this.addSystem(new GameManagerSystem());
         this.addSystem(new SimplePhysics());
+        // this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
         this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
+
+        // this.addEntity(new TypePane(0, this.camera.height - 100, 1));
     }
 }
 
@@ -57,7 +56,6 @@ export class LD50 extends Game
         Log.logLevel = LogLevel.ALL;
 
         this.setScene(new MainScene(this));
-        this.currentScene.addEntity(new TypePane(0, this.currentScene.camera.height - 100, 1));
 
     }
 }
