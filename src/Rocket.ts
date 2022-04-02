@@ -18,9 +18,9 @@ import {EARTH_X, EARTH_Y, Layers, RocketType} from "./LD50";
 import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
 
 const SMALL_MISSILE_RADIUS = 30;
-const BIG_MISSILE_RADIUS = 75;
+const BIG_MISSILE_RADIUS = 50;
 const SMALL_PASSENGER_COUNT = 100;
-const BIG_PASSENGER_COUNT = 100;
+const BIG_PASSENGER_COUNT = 400;
 
 export class PassengerShip extends Component {
 
