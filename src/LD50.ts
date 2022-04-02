@@ -1,6 +1,6 @@
 import {CollisionMatrix, ContinuousCollisionSystem, Game, Log, LogLevel, Scene, SimplePhysics} from "lagom-engine";
 import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
-import {TypePane, TypingSystem} from "./typing/Selection";
+import {RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 
 export enum Layers
@@ -38,15 +38,13 @@ class MainScene extends Scene
 
         this.addSystem(new PhysicsEngine());
         this.addSystem(new SimplePhysics());
-        // this.addSystem(new GameManagerSystem());
+        this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
         this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
-        // this.addEntity(new TypePane(0, this.camera.height - 100, 1));
         this.addSystem(new TypingSystem());
 
-        this.addEntity(new TypePane(0, this.camera.height - 100, Layers.GUI));
-
+        this.addGUIEntity(new RocketSelection(0, this.camera.height - 60, Layers.GUI));
     }
 }
 
