@@ -28,7 +28,7 @@ export class Rocket extends Entity {
         const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());
         const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y,
                                                   mousePos.x, mousePos.y);
-        const velocity = MathUtil.lengthDirXY(5, -direction);
+        const velocity = MathUtil.lengthDirXY(0.1, -direction);
 
         this.addComponent(new OffScreenDestroyable());
         this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0xAA00FF));
@@ -43,12 +43,5 @@ export class Rocket extends Entity {
             yOff: 0
         }));
 
-        coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (other.layer == Layers.Asteroid)
-            {
-                // TODO EXPLODE!
-                this.destroy();
-            }
-        });
     }
 }
