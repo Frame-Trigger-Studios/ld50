@@ -1,5 +1,14 @@
 import {Component, Entity, GlobalSystem, Key, RenderRect, System, TextDisp} from "lagom-engine";
-import {SiloAmmo, SiloThing} from "../SiloAimer";
+import {SiloAmmo} from "../SiloAimer";
+import {RocketType} from "../LD50";
+
+
+
+class RocketTypeModifier extends Component {
+    constructor(public type: RocketType) {
+        super();
+    }
+}
 
 export class RocketSelection extends Entity
 {
@@ -10,14 +19,14 @@ export class RocketSelection extends Entity
     onAdded() {
         super.onAdded();
         this.addComponent(new RenderRect(0, 0, 150, 60, 0xFFFFFF, 0x000000));
-        this.addChild(new TypePane(0, 0, 1, "QWER"));
-        this.addChild(new TypePane(0, 30, 1, "ASDF"));
+        this.addChild(new TypePane(0, 0, 1, "QWER", RocketType.MISSILE));
+        this.addChild(new TypePane(0, 30, 1, "ASDF", RocketType.PASSENGER));
     }
 }
 
 export class TypePane extends Entity
 {
-    constructor(x: number, y: number, depth: number, readonly text:string) {
+    constructor(x: number, y: number, depth: number, readonly text:string, readonly rocketType: RocketType) {
         super("typePane", x, y, depth);
     }
 
@@ -26,10 +35,15 @@ export class TypePane extends Entity
         this.addChild(new PreviewLettersTextDisp(5, 5, 0, this.text));
         this.addChild(new TypedLettersTextDisp(5, 5, 0, ""));
         this.addComponent(new TypedLetters(this.text, ""));
+        this.addComponent(new RocketTypeModifier(this.rocketType));
     }
 }
 
-export class CompletedRocket extends Component{}
+export class CompletedRocket extends Component{
+    constructor(public rocketType: RocketType) {
+        super();
+    }
+}
 
 export class TypedLettersTextDisp extends Entity {
     constructor(x: number, y: number, depth: number, readonly text: string) {
@@ -91,7 +105,6 @@ export class TypingSystem extends GlobalSystem {
         if (letter == "") {
             return;
         }
-        console.log(letter);
 
         const typingEntities = this.getScene().entities.filter((entity) => entity.getComponent(TypedLetters) != null);
         const startedEntities = typingEntities.filter(entity => {
@@ -140,7 +153,10 @@ export class TypingSystem extends GlobalSystem {
 
                 if (typedLetters.typed == typedLetters.pattern) {
                     this.resetTyped(typedLetters, text, expectedText);
-                    matchingEntity.addComponent(new CompletedRocket());
+                    const rocketType = matchingEntity.getComponent<RocketTypeModifier>(RocketTypeModifier);
+                    if (rocketType) {
+                        matchingEntity.addComponent(new CompletedRocket(rocketType.type));
+                    }
                 }
                 else
                 {
@@ -176,7 +192,7 @@ export class RocketLoaderSystem extends System<[CompletedRocket]> {
         this.runOnEntities((entity: Entity, completedRocket: CompletedRocket) => {
             const siloAmmo = this.getScene().getEntityWithName("Silo")?.getComponent<SiloAmmo>(SiloAmmo);
             if (siloAmmo) {
-                siloAmmo.hasRocket = true;
+                siloAmmo.setRocket(completedRocket.rocketType);
             }
         });
     }

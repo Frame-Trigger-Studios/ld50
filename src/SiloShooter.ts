@@ -15,7 +15,6 @@ export class SiloShooter extends System<[SiloThing , SiloAmmo]>
                 this.getScene().addEntity(new Rocket(entity.transform.getGlobalPosition().x,
                                                      entity.transform.getGlobalPosition().y,
                                                      5));
-                ammo.hasRocket = false;
 
                 const storedRockets = this.getScene().entities.filter(entity => entity.getComponent(CompletedRocket) != null);
                 if (storedRockets.length > 0)
@@ -25,6 +24,7 @@ export class SiloShooter extends System<[SiloThing , SiloAmmo]>
                         storedRockets[0].removeComponent(completedRocket, true);
                     }
                 }
+                ammo.removeRocket();
             }
         });
     }

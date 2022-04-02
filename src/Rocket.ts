@@ -1,7 +1,7 @@
 import {
     BodyType,
     CircleCollider,
-    CollisionSystem,
+    CollisionSystem, Component,
     Entity,
     Game, Log,
     MathUtil,
@@ -13,6 +13,20 @@ import {
 import {Force} from "./Physics";
 import {EARTH_X, EARTH_Y, Layers} from "./LD50";
 import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
+
+export class PassengerShip extends Component {
+
+    constructor(capacity: number) {
+        super();
+    }
+}
+
+export class Missile extends Component {
+
+    constructor(explosionRadius: number) {
+        super();
+    }
+}
 
 export class Rocket extends Entity {
 
