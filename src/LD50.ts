@@ -17,6 +17,7 @@ export enum Layers
     Asteroid,
     Earth,
     Ship,
+    Explosion,
     GUI
 }
 
@@ -33,6 +34,8 @@ matrix.addCollision(Layers.Asteroid, Layers.Earth);
 matrix.addCollision(Layers.Asteroid, Layers.Ship);
 matrix.addCollision(Layers.Ship, Layers.Earth);
 matrix.addCollision(Layers.Ship, Layers.Ship);
+matrix.addCollision(Layers.Explosion, Layers.Ship);
+matrix.addCollision(Layers.Explosion, Layers.Asteroid);
 
 
 class MainScene extends Scene
@@ -52,6 +55,9 @@ class MainScene extends Scene
 
         // this.addEntity(new TypePane(0, this.camera.height - 100, 1));
         this.addSystem(new TypingSystem());
+
+        this.addEntity(new Earth("earth", 213, 120));
+        this.addEntity(new GameManager("Game Manager"));
 
         this.addEntity(new TypePane(0, this.camera.height - 100, Layers.GUI));
 
