@@ -1,12 +1,20 @@
 import {CollisionMatrix, ContinuousCollisionSystem, Game, Log, LogLevel, Scene, SimplePhysics} from "lagom-engine";
 import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
+import {TypePane} from "./typing/Selection";
+import {GameManager, GameManagerSystem} from "./Code/GameManager";
 
-enum Layers
+export enum Layers
 {
     Asteroid,
     Earth,
     Ship
 }
+
+export const CANVAS_WIDTH = 426;
+export const GAME_WIDTH = 426;
+export const GAME_HEIGHT = 240;
+export const EARTH_X = GAME_WIDTH / 2;
+export const EARTH_Y = GAME_HEIGHT / 2;
 
 
 const matrix = new CollisionMatrix();
@@ -28,7 +36,10 @@ class MainScene extends Scene
 
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new Asteroid(10, 19));
+        this.addEntity(new GameManager("Game Manager"));
 
+        this.addSystem(new PhysicsEngine());
+        this.addSystem(new GameManagerSystem());
         this.addSystem(new SimplePhysics());
         this.addSystem(new ApplyForce());
         this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
@@ -39,12 +50,15 @@ export class LD50 extends Game
 {
     constructor()
     {
-        super({width: 426, height: 240, resolution: 3, backgroundColor: 0x0d2b45});
+        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d2b45});
 
         // TODO enable this before deploy
         // Log.logLevel = LogLevel.ERROR;
         Log.logLevel = LogLevel.ALL;
 
         this.setScene(new MainScene(this));
+        this.currentScene.addEntity(new TypePane(0, this.currentScene.camera.height - 100, 1));
+
     }
 }
+
