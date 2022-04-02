@@ -1,13 +1,14 @@
 import {CollisionMatrix, ContinuousCollisionSystem, Game, Log, LogLevel, Scene, SimplePhysics} from "lagom-engine";
 import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
-import {TypePane} from "./typing/Selection";
+import {TypePane, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 
 export enum Layers
 {
     Asteroid,
     Earth,
-    Ship
+    Ship,
+    GUI
 }
 
 export const CANVAS_WIDTH = 426;
@@ -42,6 +43,10 @@ class MainScene extends Scene
         this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         // this.addEntity(new TypePane(0, this.camera.height - 100, 1));
+        this.addSystem(new TypingSystem());
+
+        this.addEntity(new TypePane(0, this.camera.height - 100, Layers.GUI));
+
     }
 }
 
