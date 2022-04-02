@@ -11,6 +11,7 @@ import {
 import {ApplyForce, Earth, PhysicsEngine} from "./Physics";
 import {TypePane, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
+import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 
 export enum Layers
 {
@@ -49,6 +50,7 @@ class MainScene extends Scene
         this.addSystem(new SimplePhysics());
         this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
+        this.addSystem(new OffScreenDestroyer());
         const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         if (LD50.debug)
