@@ -8,6 +8,7 @@ import {
     RenderCircle,
     Rigidbody,
     SimplePhysicsBody,
+    Sprite,
     System,
     Vector
 } from "lagom-engine";
@@ -71,6 +72,10 @@ export class Earth extends Entity
         super.onAdded();
 
         this.addComponent(new RenderCircle(0, 0, 20, 0x0000AA, 0x0000FF));
+        this.addComponent(new Sprite(this.getScene().game.getResource("earth").texture(0, 0), {
+            xAnchor: 0.5,
+            yAnchor: 0.5
+        }));
         this.addChild(new Silo(0, 0));
     }
 }
@@ -100,7 +105,7 @@ export class Asteroid extends Entity
         }));
 
         coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (caller.layer == Layers.Asteroid)
+            if (other.layer == Layers.Asteroid)
             {
                 const myProps = caller.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
                 const otherProps = other.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);

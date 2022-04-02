@@ -7,13 +7,14 @@ import {
     Log,
     LogLevel,
     Scene,
-    SimplePhysics
+    SimplePhysics, SpriteSheet
 } from "lagom-engine";
 import {RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
-
+import earthSpr from "./Art/earth.png";
+import asteroidsSpr from "./Art/asteroids.png";
 export enum Layers
 {
     Asteroid,
@@ -65,8 +66,6 @@ class MainScene extends Scene
 
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
-        this.addEntity(new Earth("earth", 213, 120));
-        this.addEntity(new GameManager("Game Manager"));
 
         this.addGUIEntity(new RocketSelection(0, this.camera.height - 60, Layers.GUI));
     }
@@ -78,11 +77,14 @@ export class LD50 extends Game
 
     constructor()
     {
-        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d2b45});
+        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x130026});
 
         // TODO enable this before deploy
         // Log.logLevel = LogLevel.ERROR;
         Log.logLevel = LogLevel.ALL;
+
+        this.addResource("earth", new SpriteSheet(earthSpr, 64, 64));
+        this.addResource("asteroids", new SpriteSheet(earthSpr, 16, 16));
 
         this.setScene(new MainScene(this));
 
