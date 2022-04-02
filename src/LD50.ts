@@ -10,9 +10,12 @@ export enum Layers
     Ship
 }
 
+export const CANVAS_WIDTH = 426;
 export const GAME_WIDTH = 426;
 export const GAME_HEIGHT = 240;
-export const PLAYABLE_WIDTH = 350;
+export const EARTH_X = GAME_WIDTH / 2;
+export const EARTH_Y = GAME_HEIGHT / 2;
+
 
 const matrix = new CollisionMatrix();
 matrix.addCollision(Layers.Asteroid, Layers.Asteroid);
@@ -41,7 +44,7 @@ export class LD50 extends Game
 {
     constructor()
     {
-        super({width: GAME_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d2b45});
+        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d2b45});
 
         // TODO enable this before deploy
         // Log.logLevel = LogLevel.ERROR;

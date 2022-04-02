@@ -1,5 +1,5 @@
-import {Component, Entity, LagomType, Scene, System} from "lagom-engine";
-import {GAME_HEIGHT, GAME_WIDTH} from "../LD50";
+import {Component, Entity, LagomType, MathUtil, Scene, System} from "lagom-engine";
+import {GAME_HEIGHT, GAME_WIDTH, EARTH_X, EARTH_Y} from "../LD50";
 import {Asteroid} from "../Physics";
 
 export class GameManager extends Entity {
@@ -55,10 +55,14 @@ export class GameManagerSystem extends System<[GameData]> {
             x = -this.buffer;
             y = Math.floor(Math.random() * GAME_HEIGHT);
         } else {
-            x = GAME_WIDTH + 50;
+            x = GAME_WIDTH + this.buffer;
             y = Math.floor(Math.random() * GAME_HEIGHT);
         }
 
-        scene.addEntity(new Asteroid(x, y));
+        const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y);
+        const angle = ((Math.random() * 90) - 45)
+        const asteroid = new Asteroid(x, y);
+
+        scene.addEntity(asteroid);
     }
 }
