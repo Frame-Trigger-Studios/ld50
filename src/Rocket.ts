@@ -16,9 +16,9 @@ import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
 import {DestroyMeNextFrame} from "./DestroyMeNextFrame";
 
 const SMALL_MISSILE_RADIUS = 30;
-const BIG_MISSILE_RADIUS = 75;
+const BIG_MISSILE_RADIUS = 50;
 const SMALL_PASSENGER_COUNT = 100;
-const BIG_PASSENGER_COUNT = 100;
+const BIG_PASSENGER_COUNT = 400;
 
 export class PassengerShip extends Component
 {
