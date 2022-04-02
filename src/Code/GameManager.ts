@@ -12,7 +12,7 @@ export class GameManager extends Entity {
 
 export class GameData extends Component {
     public elapsedTime = 0;
-    public msUntilNextAsteroid = 5000;
+    public msUntilNextAsteroid = 500;
 }
 
 export class GameManagerSystem extends System<[GameData]> {
@@ -33,7 +33,7 @@ export class GameManagerSystem extends System<[GameData]> {
             gameData.msUntilNextAsteroid -= delta;
             if (gameData.msUntilNextAsteroid <= 0) {
                 this.spawnAsteroid(this.getScene());
-                gameData.msUntilNextAsteroid = 5000;
+                gameData.msUntilNextAsteroid = 500;
             }
         });
     }
@@ -59,9 +59,13 @@ export class GameManagerSystem extends System<[GameData]> {
             y = Math.floor(Math.random() * GAME_HEIGHT);
         }
 
-        const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y);
-        const angle = ((Math.random() * 90) - 45);
-        const asteroid = new Asteroid(x, y, new Vector(0, 0));
+        const radius = 1 + (Math.random() * 4);
+        const initialVelocity = Math.random() * 0.00001;
+
+        const variance = ((Math.random() * Math.PI/2) - Math.PI/4);
+        const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y) + variance;
+        const dir = MathUtil.lengthDirXY(0.005, -angleToEarth)
+        const asteroid = new Asteroid(x, y, radius, dir, initialVelocity);
 
         scene.addEntity(asteroid);
     }
