@@ -119,7 +119,7 @@ export class Asteroid extends Entity
         }));
 
         coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (caller.layer == Layers.Asteroid)
+            if (other.layer === Layers.Asteroid || other.layer === Layers.Ship)
             {
                 const myProps = caller.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
                 const otherProps = other.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
@@ -144,6 +144,10 @@ export class Asteroid extends Entity
                 myProps.yVel += velocityComponentPerpendicularToTangent.y;
                 otherProps.xVel -= velocityComponentPerpendicularToTangent.x;
                 otherProps.yVel -= velocityComponentPerpendicularToTangent.y;
+            }
+
+            if (other.layer === Layers.Ship) {
+                other.getEntity().destroy();
             }
         });
     }

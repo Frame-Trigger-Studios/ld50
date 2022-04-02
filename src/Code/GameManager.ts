@@ -10,9 +10,11 @@ export class GameManager extends Entity {
     }
 }
 
+const asteroidSpawnRate = 5000;
+
 export class GameData extends Component {
     public elapsedTime = 0;
-    public msUntilNextAsteroid = 5000;
+    public msUntilNextAsteroid = asteroidSpawnRate;
 }
 
 export class GameManagerSystem extends System<[GameData]> {
@@ -33,7 +35,7 @@ export class GameManagerSystem extends System<[GameData]> {
             gameData.msUntilNextAsteroid -= delta;
             if (gameData.msUntilNextAsteroid <= 0) {
                 this.spawnAsteroid(this.getScene());
-                gameData.msUntilNextAsteroid = 5000;
+                gameData.msUntilNextAsteroid = asteroidSpawnRate;
             }
         });
     }

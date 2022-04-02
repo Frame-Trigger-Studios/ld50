@@ -19,7 +19,6 @@ import {ScoreDisplay} from "./Code/Score";
 export enum Layers
 {
     Asteroid,
-    Rocket,
     Earth,
     Ship,
     Explosion,
@@ -37,7 +36,6 @@ const matrix = new CollisionMatrix();
 matrix.addCollision(Layers.Asteroid, Layers.Asteroid);
 matrix.addCollision(Layers.Asteroid, Layers.Earth);
 matrix.addCollision(Layers.Asteroid, Layers.Ship);
-matrix.addCollision(Layers.Rocket, Layers.Asteroid);
 matrix.addCollision(Layers.Ship, Layers.Earth);
 matrix.addCollision(Layers.Ship, Layers.Ship);
 matrix.addCollision(Layers.Explosion, Layers.Ship);
