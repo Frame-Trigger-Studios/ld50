@@ -65,7 +65,7 @@ class MainScene extends Scene
             this.addGlobalSystem(new DebugCollisionSystem(collSystem));
         }
 
-        this.addSystem(new TypingSystem());
+        this.addGlobalSystem(new TypingSystem());
 
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
@@ -76,7 +76,7 @@ class MainScene extends Scene
 
 export class LD50 extends Game
 {
-    static debug = false;
+    static debug = true;
 
     constructor()
     {
