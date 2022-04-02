@@ -1,5 +1,7 @@
 import {
     BodyType,
+    CircleCollider,
+    CollisionSystem,
     Component,
     Entity,
     MathUtil,
@@ -9,9 +11,9 @@ import {
     System,
     Vector
 } from "lagom-engine";
-import {EARTH_X, EARTH_Y} from "./LD50";
-
-const pullPoint = new Vector(213, 120);
+import {Silo} from "./SiloAimer";
+import {EARTH_X, EARTH_Y, Layers} from "./LD50";
+import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
 
 export class Force extends Component
 {
@@ -48,12 +50,12 @@ export class PhysicsEngine extends System<[PhysicsMe, SimplePhysicsBody]>
             // ph.move(100, 0);
 
             // Apply earth pull
-            const dist = MathUtil.pointDistance(entity.transform.x, entity.transform.y, pullPoint.x, pullPoint.y);
-            const dir = MathUtil.pointDirection(entity.transform.x, entity.transform.y, pullPoint.x, pullPoint.y);
+            const dist = MathUtil.pointDistance(entity.transform.x, entity.transform.y, EARTH_X, EARTH_Y);
+            const dir = MathUtil.pointDirection(entity.transform.x, entity.transform.y, EARTH_X, EARTH_Y);
 
 
             const pullForce = MathUtil.lengthDirXY(1 / dist / 300, -dir);
-            const speed = 0.1;
+            const speed = 0.01;
 
             const movement = pullForce.multiply(delta * speed);
             body.move(movement.x, movement.y);
@@ -69,12 +71,13 @@ export class Earth extends Entity
         super.onAdded();
 
         this.addComponent(new RenderCircle(0, 0, 20, 0x0000AA, 0x0000FF));
+        this.addChild(new Silo(0, 0));
     }
 }
 
 export class Asteroid extends Entity
 {
-    constructor(x: number, y: number)
+    constructor(x: number, y: number, readonly radius: number, readonly initialMovement: Vector, readonly linDrag: number)
     {
         super("asteroid", x, y);
     }
@@ -83,10 +86,40 @@ export class Asteroid extends Entity
     {
         super.onAdded();
 
-        this.addComponent(new RenderCircle(0, 0, 10, 0x140000));
+        this.addComponent(new OffScreenDestroyable())
+        this.addComponent(new RenderCircle(0, 0, this.radius, 0x140000));
         this.addComponent(new PhysicsMe());
-        this.addComponent(new Force(new Vector( 0.01, 0)));
-        this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
+        this.addComponent(new Force(this.initialMovement));
+        this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: this.linDrag}));
         this.addComponent(new Rigidbody(BodyType.Discrete));
+        const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
+            layer: Layers.Asteroid,
+            radius: this.radius,
+            xOff: 0,
+            yOff: 0
+        }));
+
+        coll.onTriggerEnter.register((caller, {other, result}) => {
+            if (caller.layer == Layers.Asteroid)
+            {
+                const myProps = caller.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
+                const otherProps = other.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
+
+                if (myProps == null || otherProps == null) {
+                    return;
+                }
+
+                const myX = myProps.xVel;
+                const myY = myProps.yVel;
+
+                myProps.yVel += otherProps.yVel;
+                myProps.xVel += otherProps.xVel;
+                otherProps.yVel += myY;
+                otherProps.xVel += myX;
+
+                // myProps.getEntity().addComponent(new Force(new Vector(otherProps.xVel, otherProps.yVel)));
+                // otherProps.getEntity().addComponent(new Force(new Vector(myProps.xVel, myProps.yVel)));
+            }
+        });
     }
 }

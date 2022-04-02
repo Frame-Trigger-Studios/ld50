@@ -10,6 +10,8 @@ const game = new LD50();
 const App = () => (
     <div style={{display: "flex", height: "100%", alignItems: "center", justifyContent: "center"}}>
         <LagomGameComponent game={game}/>
+        {LD50.debug &&
+            <canvas id={"detect-render"} width={"426"} height={"240"} style={{border: "black", borderStyle: "solid"}}/>}
     </div>
 );
 

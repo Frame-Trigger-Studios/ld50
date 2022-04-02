@@ -1,13 +1,25 @@
-import {CollisionMatrix, ContinuousCollisionSystem, Game, Log, LogLevel, Scene, SimplePhysics} from "lagom-engine";
 import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
+import {
+    CollisionMatrix,
+    ContinuousCollisionSystem,
+    DebugCollisionSystem,
+    Game,
+    Log,
+    LogLevel,
+    Scene,
+    SimplePhysics
+} from "lagom-engine";
 import {RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
+import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
+import {SiloAimer} from "./SiloAimer";
 
 export enum Layers
 {
     Asteroid,
     Earth,
     Ship,
+    Explosion,
     GUI
 }
 
@@ -24,6 +36,8 @@ matrix.addCollision(Layers.Asteroid, Layers.Earth);
 matrix.addCollision(Layers.Asteroid, Layers.Ship);
 matrix.addCollision(Layers.Ship, Layers.Earth);
 matrix.addCollision(Layers.Ship, Layers.Ship);
+matrix.addCollision(Layers.Explosion, Layers.Ship);
+matrix.addCollision(Layers.Explosion, Layers.Asteroid);
 
 
 class MainScene extends Scene
@@ -32,17 +46,27 @@ class MainScene extends Scene
     {
         super.onAdded();
 
-        this.addEntity(new Earth("earth", 213, 120));
-        this.addEntity(new Asteroid(10, 19));
-        this.addEntity(new GameManager("Game Manager"));
-
+        // Systems first
         this.addSystem(new PhysicsEngine());
         this.addSystem(new SimplePhysics());
         this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
-        this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
+        this.addSystem(new OffScreenDestroyer());
+        const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
+
+        this.addSystem(new SiloAimer());
+
+        if (LD50.debug)
+        {
+            this.addGlobalSystem(new DebugCollisionSystem(collSystem));
+        }
 
         this.addSystem(new TypingSystem());
+
+        this.addEntity(new Earth("earth", 213, 120));
+        this.addEntity(new GameManager("Game Manager"));
+        this.addEntity(new Earth("earth", 213, 120));
+        this.addEntity(new GameManager("Game Manager"));
 
         this.addGUIEntity(new RocketSelection(0, this.camera.height - 60, Layers.GUI));
     }
@@ -50,6 +74,8 @@ class MainScene extends Scene
 
 export class LD50 extends Game
 {
+    static debug = false;
+
     constructor()
     {
         super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d2b45});
