@@ -12,3 +12,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+@font-face {
+  font-family: myPixelFont;
+  src: url("./fonts/retro_computer_personal_use.ttf") format("truetype");
+}
