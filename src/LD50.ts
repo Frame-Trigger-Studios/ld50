@@ -1,16 +1,17 @@
 import {
     CollisionMatrix,
     ContinuousCollisionSystem,
+    DebugCollisionSystem,
     Game,
     Log,
     LogLevel,
     Scene,
-    SimplePhysics,
-    Vector
+    SimplePhysics
 } from "lagom-engine";
-import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
+import {ApplyForce, Earth, PhysicsEngine} from "./Physics";
 import {TypePane, TypingSystem} from "./typing/Selection";
-import {GameManager} from "./Code/GameManager";
+import {GameManager, GameManagerSystem} from "./Code/GameManager";
+import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
 
 export enum Layers
@@ -45,28 +46,36 @@ class MainScene extends Scene
     {
         super.onAdded();
 
+        // Systems first
         this.addSystem(new PhysicsEngine());
         this.addSystem(new SimplePhysics());
-        // this.addSystem(new GameManagerSystem());
+        this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
-        this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
+        this.addSystem(new OffScreenDestroyer());
+        const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
 
-        // this.addEntity(new TypePane(0, this.camera.height - 100, 1));
+        if (LD50.debug)
+        {
+            this.addGlobalSystem(new DebugCollisionSystem(collSystem));
+        }
+
         this.addSystem(new TypingSystem());
 
         this.addEntity(new Earth("earth", 213, 120));
-        this.addEntity(new Asteroid(10, 19, new Vector(0.01, 0)));
+        this.addEntity(new GameManager("Game Manager"));
+        this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
 
         this.addEntity(new TypePane(0, this.camera.height - 100, Layers.GUI));
-
     }
 }
 
 export class LD50 extends Game
 {
+    static debug = true;
+
     constructor()
     {
         super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d2b45});
