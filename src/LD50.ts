@@ -1,4 +1,5 @@
 import {CollisionMatrix, Game, Log, LogLevel, Scene} from "lagom-engine";
+import {TypePane} from "./typing/Selection";
 import {Asteroid, Earth, PhysicsEngine} from "./Physics";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 
@@ -47,5 +48,8 @@ export class LD50 extends Game
         Log.logLevel = LogLevel.INFO;
 
         this.setScene(new MainScene(this));
+        this.currentScene.addEntity(new TypePane(0, this.currentScene.camera.height - 100, 1));
+
     }
 }
+
