@@ -5,22 +5,20 @@ import {
     Component,
     Entity,
     Game,
-    Log,
     MathUtil,
-    RenderCircle,
     Rigidbody,
     SimplePhysicsBody,
-    Sprite,
-    Timer
+    Sprite
 } from "lagom-engine";
-import {Force} from "./Physics";
+import {Asteroid, Force} from "./Physics";
 import {EARTH_X, EARTH_Y, Layers, RocketType} from "./LD50";
 import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
+import {DestroyMeNextFrame} from "./DestroyMeNextFrame";
 
 const SMALL_MISSILE_RADIUS = 30;
-const BIG_MISSILE_RADIUS = 75;
+const BIG_MISSILE_RADIUS = 50;
 const SMALL_PASSENGER_COUNT = 100;
-const BIG_PASSENGER_COUNT = 100;
+const BIG_PASSENGER_COUNT = 400;
 
 export class PassengerShip extends Component
 {
@@ -76,7 +74,7 @@ export class Rocket extends Entity
 
         const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());
         const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y,
-            mousePos.x, mousePos.y);
+                                                  mousePos.x, mousePos.y);
         const velocity = MathUtil.lengthDirXY(speedMulti, -direction);
 
         this.addComponent(new OffScreenDestroyable());
@@ -85,17 +83,52 @@ export class Rocket extends Entity
         this.addComponent(new Force(velocity));
         this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
         const texture = this.getScene().game.getResource("rockets").texture(this.rocketType, 0);
-        this.addComponent(new Sprite(texture, {
+        this.addComponent(
+            new Sprite(texture, {
             xAnchor: 0.5,
             yAnchor: 0.75,
             rotation: -direction + MathUtil.degToRad(90)
         }));
 
-        const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
-            layer: Layers.Ship,
-            radius: colliderSize,
-            xOff: 0,
-            yOff: 0
-        }));
+        const coll = this.addComponent(
+            new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
+                layer: Layers.Ship,
+                radius: colliderSize,
+                xOff: 0,
+                yOff: 0
+            }));
+
+        coll.onTriggerEnter.register((caller, {other, result}) => {
+            if (other.layer === Layers.Asteroid)
+            {
+                this.explode();
+            }
+        });
+    }
+
+    explode()
+    {
+        const missile = this.getComponent<Missile>(Missile);
+        if (!missile)
+        {
+            return;
+        }
+        const explosion = this.addComponent(
+            new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
+                layer: Layers.Explosion,
+                radius: missile.explosionRadius,
+                xOff: 0,
+                yOff: 0
+            }));
+
+        explosion.onTriggerEnter.register((caller, {other, result}) => {
+            if (other.layer === Layers.Asteroid)
+            {
+                (other.getEntity() as Asteroid).pushFromCenter(this);
+            }
+        });
+
+        // Allow a frame to pass so that each asteroid can be collided with.
+        this.addComponent(new DestroyMeNextFrame());
     }
 }
