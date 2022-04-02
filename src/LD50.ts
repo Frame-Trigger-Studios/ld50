@@ -71,7 +71,7 @@ class MainScene extends Scene
 
 export class LD50 extends Game
 {
-    static debug = true;
+    static debug = false;
 
     constructor()
     {

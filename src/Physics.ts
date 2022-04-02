@@ -84,7 +84,7 @@ export class Asteroid extends Entity
     {
         super.onAdded();
 
-        this.addComponent(new OffScreenDestroyable())
+        this.addComponent(new OffScreenDestroyable());
         this.addComponent(new RenderCircle(0, 0, this.radius, 0x140000));
         this.addComponent(new PhysicsMe());
         this.addComponent(new Force(this.initialMovement));
@@ -103,21 +103,33 @@ export class Asteroid extends Entity
                 const myProps = caller.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
                 const otherProps = other.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
 
-                if (myProps == null || otherProps == null) {
+                if (myProps == null || otherProps == null)
+                {
                     return;
                 }
 
-                const myX = myProps.xVel;
-                const myY = myProps.yVel;
+                // Vector perpendicular to (x, y) is (-y, x)
+                const tangentVector = new Vector(other.getEntity().transform.y - caller.getEntity().transform.y,
+                    -(other.getEntity().transform.x - caller.getEntity().transform.x));
+                tangentVector.normalize();
 
-                myProps.yVel += otherProps.yVel;
-                myProps.xVel += otherProps.xVel;
-                otherProps.yVel += myY;
-                otherProps.xVel += myX;
+                const relativeVelocity = new Vector(otherProps.xVel - myProps.xVel, otherProps.yVel - myProps.yVel);
+                const length = dotProduct(relativeVelocity, tangentVector);
+                const tangentVelocity = new Vector(tangentVector.x, tangentVector.y).multiply(length);
+                const velocityComponentPerpendicularToTangent = relativeVelocity.sub(tangentVelocity);
 
-                // myProps.getEntity().addComponent(new Force(new Vector(otherProps.xVel, otherProps.yVel)));
-                // otherProps.getEntity().addComponent(new Force(new Vector(myProps.xVel, myProps.yVel)));
+                // This code makes both circles move.
+                myProps.xVel += velocityComponentPerpendicularToTangent.x;
+                myProps.yVel += velocityComponentPerpendicularToTangent.y;
+                otherProps.xVel -= velocityComponentPerpendicularToTangent.x;
+                otherProps.yVel -= velocityComponentPerpendicularToTangent.y;
             }
         });
     }
+}
+
+// TODO move to core
+function dotProduct(vector1: Vector, vector2: Vector): number
+{
+    return vector1.x * vector2.x + vector1.y * vector2.y;
 }
