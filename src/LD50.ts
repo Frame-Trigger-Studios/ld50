@@ -8,9 +8,10 @@ import {
     SimplePhysics,
     Vector
 } from "lagom-engine";
-import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
+import {ApplyForce, Earth, PhysicsEngine} from "./Physics";
 import {TypePane, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
+import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 
 export enum Layers
 {
@@ -51,6 +52,7 @@ class MainScene extends Scene
         this.addSystem(new SimplePhysics());
         this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
+        this.addSystem(new OffScreenDestroyer());
         this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         // this.addEntity(new TypePane(0, this.camera.height - 100, 1));

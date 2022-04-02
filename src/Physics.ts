@@ -12,6 +12,7 @@ import {
     Vector
 } from "lagom-engine";
 import {EARTH_X, EARTH_Y, Layers} from "./LD50";
+import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
 
 export class Force extends Component
 {
@@ -83,6 +84,7 @@ export class Asteroid extends Entity
     {
         super.onAdded();
 
+        this.addComponent(new OffScreenDestroyable())
         this.addComponent(new RenderCircle(0, 0, this.radius, 0x140000));
         this.addComponent(new PhysicsMe());
         this.addComponent(new Force(this.initialMovement));
