@@ -7,7 +7,7 @@ import {
     Log,
     LogLevel,
     Scene,
-    SimplePhysics, SpriteSheet
+    SimplePhysics, TextDisp, SpriteSheet
 } from "lagom-engine";
 import {RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
@@ -15,6 +15,9 @@ import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
 import earthSpr from "./Art/earth.png";
 import asteroidsSpr from "./Art/asteroids.png";
+import {SiloShooter} from "./SiloShooter";
+import {ScoreDisplay} from "./Code/Score";
+
 export enum Layers
 {
     Asteroid,
@@ -56,16 +59,18 @@ class MainScene extends Scene
         const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
+        this.addSystem(new SiloShooter());
 
         if (LD50.debug)
         {
             this.addGlobalSystem(new DebugCollisionSystem(collSystem));
         }
 
-        this.addSystem(new TypingSystem());
+        this.addGlobalSystem(new TypingSystem());
 
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
+        this.addEntity(new ScoreDisplay("Score Display", 0, 0, Layers.GUI));
 
         this.addGUIEntity(new RocketSelection(0, this.camera.height - 60, Layers.GUI));
     }

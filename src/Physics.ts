@@ -56,7 +56,7 @@ export class PhysicsEngine extends System<[PhysicsMe, SimplePhysicsBody]>
 
 
             const pullForce = MathUtil.lengthDirXY(1 / dist / 300, -dir);
-            const speed = 0.01;
+            const speed = 0.005;
 
             const movement = pullForce.multiply(delta * speed);
             body.move(movement.x, movement.y);
@@ -67,16 +67,34 @@ export class PhysicsEngine extends System<[PhysicsMe, SimplePhysicsBody]>
 
 export class Earth extends Entity
 {
+    private radius = 20;
+
     onAdded()
     {
         super.onAdded();
 
-        this.addComponent(new RenderCircle(0, 0, 20, 0x0000AA, 0x0000FF));
+        this.addComponent(new RenderCircle(0, 0, this.radius, 0x0000AA, 0x0000FF));
         this.addComponent(new Sprite(this.getScene().game.getResource("earth").texture(0, 0), {
             xAnchor: 0.5,
             yAnchor: 0.5
         }));
         this.addChild(new Silo(0, 0));
+
+        this.addComponent(new Rigidbody(BodyType.Discrete));
+
+        const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
+            layer: Layers.Earth,
+            radius: this.radius,
+            xOff: 0,
+            yOff: 0
+        }));
+
+        coll.onTriggerEnter.register((caller, {other, result}) => {
+            if (other.layer == Layers.Asteroid) {
+                // TODO lose health / lose the game
+                other.getEntity().destroy();
+            }
+        });
     }
 }
 
@@ -105,7 +123,7 @@ export class Asteroid extends Entity
         }));
 
         coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (other.layer == Layers.Asteroid)
+            if (other.layer === Layers.Asteroid || other.layer === Layers.Ship)
             {
                 const myProps = caller.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
                 const otherProps = other.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
@@ -130,6 +148,10 @@ export class Asteroid extends Entity
                 myProps.yVel += velocityComponentPerpendicularToTangent.y;
                 otherProps.xVel -= velocityComponentPerpendicularToTangent.x;
                 otherProps.yVel -= velocityComponentPerpendicularToTangent.y;
+            }
+
+            if (other.layer === Layers.Ship) {
+                other.getEntity().destroy();
             }
         });
     }

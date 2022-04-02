@@ -1,4 +1,4 @@
-import {Component, Entity, Key, RenderRect, System, TextDisp} from "lagom-engine";
+import {Component, Entity, GlobalSystem, Key, RenderRect, System, TextDisp} from "lagom-engine";
 
 export class RocketSelection extends Entity
 {
@@ -56,7 +56,7 @@ class TypedLetters extends Component {
     }
 }
 
-export class TypingSystem extends System<[TypedLetters]> {
+export class TypingSystem extends GlobalSystem {
     private allowedKeys: Map<string, string>;
 
     constructor() {
@@ -73,59 +73,88 @@ export class TypingSystem extends System<[TypedLetters]> {
         ]);
     }
 
-    types = () => [TypedLetters];
+    types = () => [];
 
     update(delta: number): void
     {
-        this.runOnEntities((entity: Entity, typedLetters: TypedLetters) => {
-
-            const game = this.getScene().getGame();
-            this.allowedKeys.forEach((v, k) => {
-                if (game.keyboard.isKeyPressed(k)) {
-                    if (typedLetters != null && typedLetters.pattern.startsWith(typedLetters.typed + v)
-                        && this.noneStarted(entity, typedLetters)) {
-                        typedLetters.typed += v;
-
-                        const textDisp = entity.findChildWithName("TypedLettersTextDisp");
-                        const text = textDisp?.getComponent<TextDisp>(TextDisp);
-                        if (text) {
-                            const expectedText = entity.findChildWithName("PreviewLettersTextDisp")
-                                ?.getComponent<TextDisp>(TextDisp);
-                            if (typedLetters.typed == typedLetters.pattern) {
-                                text.pixiObj.text = "";
-                                typedLetters.typed = "";
-                                if (expectedText) {
-                                    expectedText.pixiObj.text = typedLetters.pattern[0];
-                                }
-                            }
-                            else
-                            {
-                                text.pixiObj.text = typedLetters.typed;
-                                if (expectedText) {
-                                    expectedText.pixiObj.text = typedLetters.pattern;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+        const game = this.getScene().getGame();
+        let letter = "";
+        this.allowedKeys.forEach((v, k) => {
+            if (game.keyboard.isKeyPressed(k)) {
+                letter = v;
+                return;
+            }
         });
-    }
+        if (letter == "") {
+            return;
+        }
+        console.log(letter);
 
-    private noneStarted(entity: Entity, target: TypedLetters): boolean {
-        const children = entity?.parent?.children;
-        if (children) {
-            return !children.some((entity) => {
+        const typingEntities = this.getScene().entities.filter((entity) => entity.getComponent(TypedLetters) != null);
+        const startedEntities = typingEntities.filter(entity => {
+            const typpedLetters = entity.getComponent<TypedLetters>(TypedLetters);
+            return typpedLetters && typpedLetters.typed.length > 0;
+        });
+
+        let matchingEntity = null;
+
+        if (startedEntities.length > 0 ) {
+            // assume only one started
+            matchingEntity = startedEntities[0];
+        } else {
+            const matchingEntities = typingEntities.filter(entity => {
                 const typedLetters = entity.getComponent<TypedLetters>(TypedLetters);
-                if (typedLetters && target != typedLetters) {
-                    return typedLetters.typed.length > 0;
+                // console.log("typed: " + typedLetters?.pattern + " " + typedLetters?.typed + " " + letter);
+                return typedLetters?.pattern.startsWith(typedLetters.typed + letter);
+            });
+            if (matchingEntities.length > 0) {
+                matchingEntity = matchingEntities[0];
+            }
+        }
+
+        if (matchingEntity) {
+            const typingEntity = matchingEntity;
+            const typedLetters = typingEntity.getComponent<TypedLetters>(TypedLetters);
+            const textDisp = typingEntity.findChildWithName("TypedLettersTextDisp");
+            const text = textDisp?.getComponent<TextDisp>(TextDisp);
+            const expectedText = typingEntity.findChildWithName("PreviewLettersTextDisp")
+                ?.getComponent<TextDisp>(TextDisp);
+            if (typedLetters == null) {
+                return;
+            }
+            // console.log("typed: " + typedLetters.pattern);
+            if (typedLetters.pattern.startsWith(typedLetters.typed + letter)) {
+                typedLetters.typed += letter;
+
+                if (!text) {
+                    return;
+                }
+
+                if (typedLetters.typed == typedLetters.pattern) {
+                    this.resetTyped(typedLetters, text, expectedText);
                 }
                 else
                 {
-                    return false;
+                    text.pixiObj.text = typedLetters.typed;
+                    if (expectedText) {
+                        expectedText.pixiObj.text = typedLetters.pattern;
+                    }
                 }
-            });
+            } else {
+                this.resetTyped(typedLetters, text, expectedText);
+            }
         }
-        return true;
+    }
+
+    private resetTyped(typedLetters: TypedLetters,
+                         enteredText: TextDisp | undefined | null,
+                         expectedText: TextDisp | undefined | null) {
+        typedLetters.typed = "";
+        if (enteredText) {
+            enteredText.pixiObj.text = "";
+        }
+        if (expectedText) {
+            expectedText.pixiObj.text = typedLetters.pattern[0];
+        }
     }
 }

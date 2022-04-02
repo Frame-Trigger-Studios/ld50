@@ -5,17 +5,17 @@ export class OffScreenDestroyable extends Component {
 }
 
 export class OffScreenDestroyer extends System<[OffScreenDestroyable]> {
-    types = () => [OffScreenDestroyable]
+    types = () => [OffScreenDestroyable];
 
     update(delta: number): void {
         this.runOnEntities(((entity) => {
-            if (entity.transform.x > GAME_WIDTH + 100
-                || entity.transform.x < -100
-                || entity.transform.y > GAME_HEIGHT + 100
-                || entity.transform.y < -100) {
+            if (entity.transform.x > GAME_WIDTH + 50
+                || entity.transform.x < -50
+                || entity.transform.y > GAME_HEIGHT + 50
+                || entity.transform.y < -50) {
 
-                entity.destroy()
+                entity.destroy();
             }
-        }))
+        }));
     }
 }
