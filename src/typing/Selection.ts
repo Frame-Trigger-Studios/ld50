@@ -1,13 +1,15 @@
-import {Component, Entity, GlobalSystem, Key, RenderRect, System, TextDisp} from "lagom-engine";
-import {SiloAmmo, SiloThing} from "../SiloAimer";
+import {Component, Entity, GlobalSystem, Key, RenderRect, Sprite, System, TextDisp} from "lagom-engine";
+import {SiloAmmo} from "../SiloAimer";
 
 export class RocketSelection extends Entity
 {
-    constructor(x: number, y: number, depth: number) {
+    constructor(x: number, y: number, depth: number)
+    {
         super("rocketSelection", x, y, depth);
     }
 
-    onAdded() {
+    onAdded()
+    {
         super.onAdded();
         this.addComponent(new RenderRect(0, 0, 150, 60, 0xFFFFFF, 0x000000));
         this.addChild(new TypePane(0, 0, 1, "QWER"));
@@ -17,11 +19,13 @@ export class RocketSelection extends Entity
 
 export class TypePane extends Entity
 {
-    constructor(x: number, y: number, depth: number, readonly text:string) {
+    constructor(x: number, y: number, depth: number, readonly text: string)
+    {
         super("typePane", x, y, depth);
     }
 
-    onAdded() {
+    onAdded()
+    {
         super.onAdded();
         this.addChild(new PreviewLettersTextDisp(5, 5, 0, this.text));
         this.addChild(new TypedLettersTextDisp(5, 5, 0, ""));
@@ -29,40 +33,52 @@ export class TypePane extends Entity
     }
 }
 
-export class CompletedRocket extends Component{}
+export class CompletedRocket extends Component
+{
+}
 
-export class TypedLettersTextDisp extends Entity {
-    constructor(x: number, y: number, depth: number, readonly text: string) {
+export class TypedLettersTextDisp extends Entity
+{
+    constructor(x: number, y: number, depth: number, readonly text: string)
+    {
         super("TypedLettersTextDisp", x, y, depth);
     }
 
-    onAdded() {
+    onAdded()
+    {
         super.onAdded();
-        this.addComponent(new TextDisp(0, 0, this.text, {fill:"red", fontSize: 16}));
+        this.addComponent(new TextDisp(0, 0, this.text, {fill: "red", fontSize: 16}));
     }
 }
 
-export class PreviewLettersTextDisp extends Entity {
-    constructor(x: number, y: number, depth: number, readonly text: string) {
+export class PreviewLettersTextDisp extends Entity
+{
+    constructor(x: number, y: number, depth: number, readonly text: string)
+    {
         super("PreviewLettersTextDisp", x, y, depth);
     }
 
-    onAdded() {
+    onAdded()
+    {
         super.onAdded();
-        this.addComponent(new TextDisp(0, 0, this.text[0], {fill:"gray", fontSize: 16}));
+        this.addComponent(new TextDisp(0, 0, this.text[0], {fill: "gray", fontSize: 16}));
     }
 }
 
-class TypedLetters extends Component {
-    constructor(public pattern: string, public typed: string) {
+class TypedLetters extends Component
+{
+    constructor(public pattern: string, public typed: string)
+    {
         super();
     }
 }
 
-export class TypingSystem extends GlobalSystem {
+export class TypingSystem extends GlobalSystem
+{
     private allowedKeys: Map<string, string>;
 
-    constructor() {
+    constructor()
+    {
         super();
         this.allowedKeys = new Map<string, string>([
             [Key.KeyQ, "Q"],
@@ -83,12 +99,14 @@ export class TypingSystem extends GlobalSystem {
         const game = this.getScene().getGame();
         let letter = "";
         this.allowedKeys.forEach((v, k) => {
-            if (game.keyboard.isKeyPressed(k)) {
+            if (game.keyboard.isKeyPressed(k))
+            {
                 letter = v;
                 return;
             }
         });
-        if (letter == "") {
+        if (letter == "")
+        {
             return;
         }
         console.log(letter);
@@ -102,82 +120,106 @@ export class TypingSystem extends GlobalSystem {
         let matchingEntity = null;
 
         // Block rocket building if there is a stored rocket.
-        if (typingEntities.some(entity => entity.getComponent(CompletedRocket) != null)) {
+        if (typingEntities.some(entity => entity.getComponent(CompletedRocket) != null))
+        {
             return;
         }
 
-        if (startedEntities.length > 0 ) {
+        if (startedEntities.length > 0)
+        {
             // assume only one started
             matchingEntity = startedEntities[0];
-        } else {
+        } else
+        {
             const matchingEntities = typingEntities.filter(entity => {
                 const typedLetters = entity.getComponent<TypedLetters>(TypedLetters);
                 // console.log("typed: " + typedLetters?.pattern + " " + typedLetters?.typed + " " + letter);
                 return typedLetters?.pattern.startsWith(typedLetters.typed + letter);
             });
-            if (matchingEntities.length > 0) {
+            if (matchingEntities.length > 0)
+            {
                 matchingEntity = matchingEntities[0];
             }
         }
 
-        if (matchingEntity) {
+        if (matchingEntity)
+        {
             const typingEntity = matchingEntity;
             const typedLetters = typingEntity.getComponent<TypedLetters>(TypedLetters);
             const textDisp = typingEntity.findChildWithName("TypedLettersTextDisp");
             const text = textDisp?.getComponent<TextDisp>(TextDisp);
             const expectedText = typingEntity.findChildWithName("PreviewLettersTextDisp")
                 ?.getComponent<TextDisp>(TextDisp);
-            if (typedLetters == null) {
+            if (typedLetters == null)
+            {
                 return;
             }
             // console.log("typed: " + typedLetters.pattern);
-            if (typedLetters.pattern.startsWith(typedLetters.typed + letter)) {
+            if (typedLetters.pattern.startsWith(typedLetters.typed + letter))
+            {
                 typedLetters.typed += letter;
 
-                if (!text) {
+                if (!text)
+                {
                     return;
                 }
 
-                if (typedLetters.typed == typedLetters.pattern) {
+                if (typedLetters.typed == typedLetters.pattern)
+                {
                     this.resetTyped(typedLetters, text, expectedText);
                     matchingEntity.addComponent(new CompletedRocket());
-                }
-                else
+                } else
                 {
                     text.pixiObj.text = typedLetters.typed;
-                    if (expectedText) {
+                    if (expectedText)
+                    {
                         expectedText.pixiObj.text = typedLetters.pattern;
                     }
                 }
-            } else {
+            } else
+            {
                 this.resetTyped(typedLetters, text, expectedText);
             }
         }
     }
 
     private resetTyped(typedLetters: TypedLetters,
-                         enteredText: TextDisp | undefined | null,
-                         expectedText: TextDisp | undefined | null) {
+                       enteredText: TextDisp | undefined | null,
+                       expectedText: TextDisp | undefined | null)
+    {
         typedLetters.typed = "";
-        if (enteredText) {
+        if (enteredText)
+        {
             enteredText.pixiObj.text = "";
         }
-        if (expectedText) {
+        if (expectedText)
+        {
             expectedText.pixiObj.text = typedLetters.pattern[0];
         }
     }
 }
 
-export class RocketLoaderSystem extends System<[CompletedRocket]> {
+export class RocketLoaderSystem extends System<[CompletedRocket]>
+{
     types = () => [CompletedRocket];
 
     update(delta: number): void
     {
         this.runOnEntities((entity: Entity, completedRocket: CompletedRocket) => {
-            const siloAmmo = this.getScene().getEntityWithName("Silo")?.getComponent<SiloAmmo>(SiloAmmo);
-            if (siloAmmo) {
+            const silo = this.getScene().getEntityWithName("Silo");
+            const siloAmmo = silo?.getComponent<SiloAmmo>(SiloAmmo);
+            if (siloAmmo && !siloAmmo.hasRocket)
+            {
                 siloAmmo.hasRocket = true;
+                const texture = this.getScene().game.getResource("rockets").texture(0, 0);
+                silo?.addComponent(new LaunchpadSprite(texture as never));
             }
         });
+    }
+}
+export class LaunchpadSprite extends Sprite {
+    constructor(texture: never /* PIXI.Texture */)
+    {
+        super(<never>texture, {xAnchor:0.5, yAnchor:0.75});
     }
 }
