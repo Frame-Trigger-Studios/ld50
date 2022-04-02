@@ -11,6 +11,7 @@ import {
     System,
     Vector
 } from "lagom-engine";
+import {Silo} from "./SiloAimer";
 import {EARTH_X, EARTH_Y, Layers} from "./LD50";
 import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
 
@@ -70,6 +71,7 @@ export class Earth extends Entity
         super.onAdded();
 
         this.addComponent(new RenderCircle(0, 0, 20, 0x0000AA, 0x0000FF));
+        this.addChild(new Silo(0, 0));
     }
 }
 
