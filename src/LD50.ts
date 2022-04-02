@@ -1,5 +1,5 @@
-import {CollisionMatrix, Game, Log, LogLevel, Scene} from "lagom-engine";
-import {Asteroid, Earth, PhysicsEngine} from "./Physics";
+import {CollisionMatrix, ContinuousCollisionSystem, Game, Log, LogLevel, Scene, SimplePhysics} from "lagom-engine";
+import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
 
 enum Layers
 {
@@ -23,10 +23,15 @@ class MainScene extends Scene
     {
         super.onAdded();
 
+        this.addSystem(new PhysicsEngine());
+        this.addSystem(new SimplePhysics());
+
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new Asteroid(10, 19));
 
-        this.addSystem(new PhysicsEngine());
+        this.addSystem(new SimplePhysics());
+        this.addSystem(new ApplyForce());
+        this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
     }
 }
 
@@ -38,7 +43,7 @@ export class LD50 extends Game
 
         // TODO enable this before deploy
         // Log.logLevel = LogLevel.ERROR;
-        Log.logLevel = LogLevel.INFO;
+        Log.logLevel = LogLevel.ALL;
 
         this.setScene(new MainScene(this));
     }
