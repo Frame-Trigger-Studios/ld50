@@ -10,6 +10,14 @@ import {
 import {EARTH_X, EARTH_Y} from "./LD50";
 
 export class SiloThing extends Component{}
+
+export class SiloAmmo extends Component {
+
+    constructor(public hasRocket: boolean) {
+        super();
+    }
+}
+
 export class Silo extends Entity {
     constructor(x: number, y: number)
     {
@@ -22,6 +30,7 @@ export class Silo extends Entity {
         // this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0x0000FF));
         this.addComponent(new Sprite(this.getScene().game.getResource("launchpad").texture(0, 0), {yAnchor:0, xAnchor:0.5}));
         this.addComponent(new SiloThing());
+        this.addComponent(new SiloAmmo(false));
     }
 }
 
