@@ -15,6 +15,7 @@ import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
 import {SiloShooter} from "./SiloShooter";
 import {ScoreDisplay} from "./Code/Score";
+import {DestroySystem} from "./DestroyMeNextFrame";
 
 export enum Layers
 {
@@ -54,6 +55,7 @@ class MainScene extends Scene
         this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
         this.addSystem(new OffScreenDestroyer());
+        this.addSystem(new DestroySystem());
         const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
