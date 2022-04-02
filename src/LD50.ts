@@ -1,4 +1,5 @@
-import {Game, Log, LogLevel, Scene} from "lagom-engine";
+import {Entity, Game, Log, LogLevel, Scene} from "lagom-engine";
+import {TypePane} from "./typing/Selection";
 
 
 class MainScene extends Scene
@@ -17,5 +18,8 @@ export class LD50 extends Game
         Log.logLevel = LogLevel.INFO;
 
         this.setScene(new MainScene(this));
+        this.currentScene.addEntity(new TypePane(0, this.currentScene.camera.height - 100, 1));
+
     }
 }
+
