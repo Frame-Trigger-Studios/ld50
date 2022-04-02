@@ -61,7 +61,8 @@ export class GameManagerSystem extends System<[GameData]> {
             y = Math.floor(Math.random() * GAME_HEIGHT);
         }
 
-        const radius = 1 + (Math.random() * 4);
+        // 1 - 3
+        const radius = 2 + Math.floor(Math.random() * 4);
         const linearDrag = Math.random() * 0.00001;
         // const speed = Math.random() * 0.01;
         const speed = 0.005;

@@ -15,6 +15,8 @@ import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
 import earthSpr from "./Art/earth.png";
 import asteroidsSpr from "./Art/asteroids.png";
+import launchpadSpr from "./Art/launchpad.png";
+import rocketsSpr from "./Art/rockets.png";
 import {SiloShooter} from "./SiloShooter";
 import {ScoreDisplay} from "./Code/Score";
 
@@ -89,7 +91,9 @@ export class LD50 extends Game
         Log.logLevel = LogLevel.ALL;
 
         this.addResource("earth", new SpriteSheet(earthSpr, 64, 64));
-        this.addResource("asteroids", new SpriteSheet(earthSpr, 16, 16));
+        this.addResource("asteroids", new SpriteSheet(asteroidsSpr, 16, 16));
+        this.addResource("launchpad", new SpriteSheet(launchpadSpr, 18, 23));
+        this.addResource("rockets", new SpriteSheet(rocketsSpr, 32, 32));
 
         this.setScene(new MainScene(this));
 

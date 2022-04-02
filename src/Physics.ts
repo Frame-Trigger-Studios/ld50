@@ -10,6 +10,7 @@ import {
     SimplePhysicsBody,
     Sprite,
     System,
+    Util,
     Vector
 } from "lagom-engine";
 import {Silo} from "./SiloAimer";
@@ -90,7 +91,8 @@ export class Earth extends Entity
         }));
 
         coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (other.layer == Layers.Asteroid) {
+            if (other.layer == Layers.Asteroid)
+            {
                 // TODO lose health / lose the game
                 other.getEntity().destroy();
             }
@@ -110,10 +112,15 @@ export class Asteroid extends Entity
         super.onAdded();
 
         this.addComponent(new OffScreenDestroyable());
-        this.addComponent(new RenderCircle(0, 0, this.radius, 0x140000));
+        // this.addComponent(new RenderCircle(0, 0, this.radius, 0x140000));
+        const texture = this.getScene().game.getResource("asteroids").texture(this.radius - 2, Util.choose(0, 1));
+        this.addComponent(new Sprite(texture, {xAnchor: 0.5, yAnchor: 0.5, rotation: MathUtil.randomRange(0, 360)}));
         this.addComponent(new PhysicsMe());
         this.addComponent(new Force(this.initialMovement));
-        this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: this.linDrag}));
+        this.addComponent(new SimplePhysicsBody({
+            angDrag: 0.0001,
+            linDrag: this.linDrag
+        })).angVel = (Math.random() * 0.04 * Util.choose(1, -1));
         this.addComponent(new Rigidbody(BodyType.Discrete));
         const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
             layer: Layers.Asteroid,
@@ -146,11 +153,14 @@ export class Asteroid extends Entity
                 // This code makes both circles move.
                 myProps.xVel += velocityComponentPerpendicularToTangent.x;
                 myProps.yVel += velocityComponentPerpendicularToTangent.y;
+                myProps.angVel += Math.random() * 0.2 * Util.choose(1, -1);
                 otherProps.xVel -= velocityComponentPerpendicularToTangent.x;
                 otherProps.yVel -= velocityComponentPerpendicularToTangent.y;
+                otherProps.angVel += Math.random() * 0.2 * Util.choose(1, -1);
             }
 
-            if (other.layer === Layers.Ship) {
+            if (other.layer === Layers.Ship)
+            {
                 other.getEntity().destroy();
             }
         });
