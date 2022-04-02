@@ -57,8 +57,8 @@ class MainScene extends Scene
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
         this.addEntity(new Earth("earth", 213, 120));
-        this.addEntity(new Asteroid(10, 19, new Vector(0.1, 0)));
-        this.addEntity(new Asteroid(200, 19, new Vector(-0.1, 0)));
+        // this.addEntity(new Asteroid(10, 19, new Vector(0.1, 0)));
+        // this.addEntity(new Asteroid(200, 19, new Vector(-0.1, 0)));
         this.addEntity(new GameManager("Game Manager"));
 
         this.addEntity(new TypePane(0, this.camera.height - 100, Layers.GUI));
