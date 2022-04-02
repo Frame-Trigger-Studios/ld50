@@ -107,8 +107,16 @@ export class Asteroid extends Entity
                     return;
                 }
 
-                myProps.getEntity().addComponent(new Force(new Vector(otherProps.xVel, otherProps.yVel)));
-                otherProps.getEntity().addComponent(new Force(new Vector(myProps.xVel, myProps.yVel)));
+                const myX = myProps.xVel;
+                const myY = myProps.yVel;
+
+                myProps.yVel += otherProps.yVel;
+                myProps.xVel += otherProps.xVel;
+                otherProps.yVel += myY;
+                otherProps.xVel += myX;
+
+                // myProps.getEntity().addComponent(new Force(new Vector(otherProps.xVel, otherProps.yVel)));
+                // otherProps.getEntity().addComponent(new Force(new Vector(myProps.xVel, myProps.yVel)));
             }
         });
     }

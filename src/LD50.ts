@@ -45,9 +45,7 @@ class MainScene extends Scene
     {
         super.onAdded();
 
-        this.addEntity(new Earth("earth", 213, 120));
-        this.addEntity(new GameManager("Game Manager"));
-
+        // Systems first
         this.addSystem(new PhysicsEngine());
         this.addSystem(new SimplePhysics());
         this.addSystem(new GameManagerSystem());
@@ -59,6 +57,10 @@ class MainScene extends Scene
         this.addSystem(new TypingSystem());
 
         this.addEntity(new Earth("earth", 213, 120));
+        this.addEntity(new GameManager("Game Manager"));
+        this.addEntity(new Earth("earth", 213, 120));
+        // this.addEntity(new Asteroid(10, 19, new Vector(0.1, 0)));
+        // this.addEntity(new Asteroid(200, 19, new Vector(-0.1, 0)));
         this.addEntity(new GameManager("Game Manager"));
 
         this.addEntity(new TypePane(0, this.camera.height - 100, Layers.GUI));
