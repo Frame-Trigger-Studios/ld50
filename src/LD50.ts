@@ -9,7 +9,7 @@ import {
     Scene,
     SimplePhysics, TextDisp
 } from "lagom-engine";
-import {RocketSelection, TypingSystem} from "./typing/Selection";
+import {RocketLoaderSystem, RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
@@ -56,6 +56,7 @@ class MainScene extends Scene
         this.addSystem(new ApplyForce());
         this.addSystem(new OffScreenDestroyer());
         this.addSystem(new DestroySystem());
+        this.addSystem(new RocketLoaderSystem());
         const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
