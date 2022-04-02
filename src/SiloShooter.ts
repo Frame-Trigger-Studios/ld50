@@ -14,7 +14,7 @@ export class SiloShooter extends System<[SiloThing , SiloAmmo]>
 
             if (Game.mouse.isButtonReleased(Button.LEFT) && ammo.hasRocket) {
                 const rocket = this.getScene().addEntity(
-                    new Rocket(entity.transform.getGlobalPosition().x, entity.transform.getGlobalPosition().y, 5, ammo.rocket));
+                    new Rocket(entity.transform.getGlobalPosition().x, entity.transform.getGlobalPosition().y, ammo.rocket));
 
 
                 const storedRockets = this.getScene().entities.filter(entity => entity.getComponent(CompletedRocket) != null);

@@ -10,15 +10,12 @@ import {
     SimplePhysicsBody,
     Sprite,
     System,
-    Timer,
     Util,
     Vector
 } from "lagom-engine";
 import {Silo} from "./SiloAimer";
 import {EARTH_X, EARTH_Y, Layers} from "./LD50";
 import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
-import {DestroyMeNextFrame} from "./DestroyMeNextFrame";
-import {Missile} from "./Rocket";
 
 export class Force extends Component
 {
@@ -86,12 +83,13 @@ export class Earth extends Entity
 
         this.addComponent(new Rigidbody(BodyType.Discrete));
 
-        const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
-            layer: Layers.Earth,
-            radius: this.radius,
-            xOff: 0,
-            yOff: 0
-        }));
+        const coll = this.addComponent(
+            new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
+                layer: Layers.Earth,
+                radius: this.radius,
+                xOff: 0,
+                yOff: 0
+            }));
 
         coll.onTriggerEnter.register((caller, {other, result}) => {
             if (other.layer == Layers.Asteroid)
@@ -105,7 +103,8 @@ export class Earth extends Entity
 
 export class Asteroid extends Entity
 {
-    constructor(x: number, y: number, readonly radius: number, readonly initialMovement: Vector, readonly linDrag: number)
+    constructor(x: number, y: number, readonly radius: number, readonly initialMovement: Vector,
+                readonly linDrag: number)
     {
         super("asteroid", x, y);
     }
@@ -121,16 +120,17 @@ export class Asteroid extends Entity
         this.addComponent(new PhysicsMe());
         this.addComponent(new Force(this.initialMovement));
         this.addComponent(new SimplePhysicsBody({
-            angDrag: 0.0001,
-            linDrag: this.linDrag
-        })).angVel = (Math.random() * 0.04 * Util.choose(1, -1));
+                                                    angDrag: 0.0001,
+                                                    linDrag: this.linDrag
+                                                })).angVel = (Math.random() * 0.04 * Util.choose(1, -1));
         this.addComponent(new Rigidbody(BodyType.Discrete));
-        const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
-            layer: Layers.Asteroid,
-            radius: this.radius,
-            xOff: 0,
-            yOff: 0
-        }));
+        const coll = this.addComponent(
+            new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
+                layer: Layers.Asteroid,
+                radius: this.radius,
+                xOff: 0,
+                yOff: 0
+            }));
 
         const pushUs = (me: Entity, them: Entity) => {
             const myProps = me.getComponent<SimplePhysicsBody>(SimplePhysicsBody);
@@ -161,51 +161,28 @@ export class Asteroid extends Entity
             otherProps.angVel += Math.random() * 0.2 * Util.choose(1, -1);
         };
 
-        const pushFromCenter = (asteroid: Entity, forceSource: Entity) => {
-            const myProps = asteroid.getComponent<SimplePhysicsBody>(SimplePhysicsBody);
-
-            if (myProps == null) {
-                return;
-            }
-
-            const direction = MathUtil.pointDirection(-asteroid.transform.getGlobalPosition().x,
-                                                      asteroid.transform.getGlobalPosition().y,
-                                                      -forceSource.transform.getGlobalPosition().x,
-                                                      forceSource.transform.getGlobalPosition().y);
-            const velocity = MathUtil.lengthDirXY(0.1, direction);
-            asteroid.addComponent(new Force(velocity));
-        };
-
         coll.onTriggerEnter.register((caller, {other, result}) => {
             if (other.layer === Layers.Asteroid)
             {
                 pushUs(caller.getEntity(), other.getEntity());
             }
-
-
-
-            if (other.layer === Layers.Ship) {
-                const missile = other.getEntity().getComponent<Missile>(Missile);
-                if (!missile) {
-                    return;
-                }
-                const explosion = other.getEntity().addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
-                    layer: Layers.Explosion,
-                    radius: missile.explosionRadius,
-                    xOff: 0,
-                    yOff: 0
-                }));
-
-                explosion.onTriggerEnter.register((caller, {other, result}) => {
-                    if (other.layer === Layers.Asteroid) {
-                        pushFromCenter(other.getEntity(), caller.getEntity());
-                    }
-                });
-
-                other.getEntity().addComponent(new DestroyMeNextFrame());
-            }
         });
     }
+
+    pushFromCenter = (forceSource: Entity) => {
+        const myProps = this.getComponent<SimplePhysicsBody>(SimplePhysicsBody);
+        if (myProps == null)
+        {
+            return;
+        }
+
+        const direction = MathUtil.pointDirection(-this.transform.getGlobalPosition().x,
+                                                  this.transform.getGlobalPosition().y,
+                                                  -forceSource.transform.getGlobalPosition().x,
+                                                  forceSource.transform.getGlobalPosition().y);
+        const velocity = MathUtil.lengthDirXY(0.1, direction);
+        this.addComponent(new Force(velocity));
+    };
 }
 
 // TODO move to core
