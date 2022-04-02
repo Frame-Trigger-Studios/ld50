@@ -1,12 +1,13 @@
 import {CollisionMatrix, Game, Log, LogLevel, Scene} from "lagom-engine";
-import {TypePane} from "./typing/Selection";
+import {TypePane, TypingSystem} from "./typing/Selection";
 import {Asteroid, Earth, PhysicsEngine} from "./Physics";
 
 enum Layers
 {
     Asteroid,
     Earth,
-    Ship
+    Ship,
+    GUI
 }
 
 
@@ -42,7 +43,10 @@ export class LD50 extends Game
         Log.logLevel = LogLevel.INFO;
 
         this.setScene(new MainScene(this));
-        this.currentScene.addEntity(new TypePane(0, this.currentScene.camera.height - 100, 1));
+
+        this.currentScene.addSystem(new TypingSystem());
+
+        this.currentScene.addEntity(new TypePane(0, this.currentScene.camera.height - 100, Layers.GUI));
 
     }
 }
