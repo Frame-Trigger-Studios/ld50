@@ -7,14 +7,19 @@ import {
     Log,
     LogLevel,
     Scene,
-    SimplePhysics, TextDisp
+    SimplePhysics, TextDisp, SpriteSheet
 } from "lagom-engine";
 import {RocketLoaderSystem, RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
+import earthSpr from "./Art/earth.png";
+import asteroidsSpr from "./Art/asteroids.png";
+import launchpadSpr from "./Art/launchpad.png";
+import rocketsSpr from "./Art/rockets.png";
 import {SiloShooter} from "./SiloShooter";
 import {ScoreDisplay} from "./Code/Score";
+import {DestroySystem} from "./DestroyMeNextFrame";
 
 export enum Layers
 {
@@ -54,6 +59,7 @@ class MainScene extends Scene
         this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
         this.addSystem(new OffScreenDestroyer());
+        this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
         const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
@@ -77,15 +83,20 @@ class MainScene extends Scene
 
 export class LD50 extends Game
 {
-    static debug = true;
+    static debug = false;
 
     constructor()
     {
-        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d2b45});
+        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x130026});
 
         // TODO enable this before deploy
         // Log.logLevel = LogLevel.ERROR;
         Log.logLevel = LogLevel.ALL;
+
+        this.addResource("earth", new SpriteSheet(earthSpr, 64, 64));
+        this.addResource("asteroids", new SpriteSheet(asteroidsSpr, 16, 16));
+        this.addResource("launchpad", new SpriteSheet(launchpadSpr, 18, 23));
+        this.addResource("rockets", new SpriteSheet(rocketsSpr, 32, 32));
 
         this.setScene(new MainScene(this));
 

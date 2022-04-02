@@ -8,12 +8,16 @@ import {
     RenderCircle,
     Rigidbody,
     SimplePhysicsBody,
+    Sprite,
     System,
+    Timer,
+    Util,
     Vector
 } from "lagom-engine";
 import {Silo} from "./SiloAimer";
 import {EARTH_X, EARTH_Y, Layers} from "./LD50";
 import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
+import {DestroyMeNextFrame} from "./DestroyMeNextFrame";
 
 export class Force extends Component
 {
@@ -73,6 +77,10 @@ export class Earth extends Entity
         super.onAdded();
 
         this.addComponent(new RenderCircle(0, 0, this.radius, 0x0000AA, 0x0000FF));
+        this.addComponent(new Sprite(this.getScene().game.getResource("earth").texture(0, 0), {
+            xAnchor: 0.5,
+            yAnchor: 0.5
+        }));
         this.addChild(new Silo(0, 0));
 
         this.addComponent(new Rigidbody(BodyType.Discrete));
@@ -85,13 +93,13 @@ export class Earth extends Entity
         }));
 
         coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (other.layer == Layers.Asteroid) {
+            if (other.layer == Layers.Asteroid)
+            {
                 // TODO lose health / lose the game
                 other.getEntity().destroy();
             }
         });
     }
-
 }
 
 export class Asteroid extends Entity
@@ -106,10 +114,15 @@ export class Asteroid extends Entity
         super.onAdded();
 
         this.addComponent(new OffScreenDestroyable());
-        this.addComponent(new RenderCircle(0, 0, this.radius, 0x140000));
+        // this.addComponent(new RenderCircle(0, 0, this.radius, 0x140000));
+        const texture = this.getScene().game.getResource("asteroids").texture(this.radius - 2, Util.choose(0, 1));
+        this.addComponent(new Sprite(texture, {xAnchor: 0.5, yAnchor: 0.5, rotation: MathUtil.randomRange(0, 360)}));
         this.addComponent(new PhysicsMe());
         this.addComponent(new Force(this.initialMovement));
-        this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: this.linDrag}));
+        this.addComponent(new SimplePhysicsBody({
+            angDrag: 0.0001,
+            linDrag: this.linDrag
+        })).angVel = (Math.random() * 0.04 * Util.choose(1, -1));
         this.addComponent(new Rigidbody(BodyType.Discrete));
         const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
             layer: Layers.Asteroid,
@@ -118,36 +131,71 @@ export class Asteroid extends Entity
             yOff: 0
         }));
 
-        coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (other.layer === Layers.Asteroid || other.layer === Layers.Ship)
+        const pushUs = (me: Entity, them: Entity) => {
+            const myProps = me.getComponent<SimplePhysicsBody>(SimplePhysicsBody);
+            const otherProps = them.getComponent<SimplePhysicsBody>(SimplePhysicsBody);
+
+            if (myProps == null || otherProps == null)
             {
-                const myProps = caller.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
-                const otherProps = other.getEntity().getComponent<SimplePhysicsBody>(SimplePhysicsBody);
+                return;
+            }
 
-                if (myProps == null || otherProps == null)
-                {
-                    return;
-                }
+            // Vector perpendicular to (x, y) is (-y, x)
+            const tangentVector = new Vector(them.transform.y - me.transform.y,
+                                             -(them.transform.x - me.transform.x));
+            tangentVector.normalize();
 
-                // Vector perpendicular to (x, y) is (-y, x)
-                const tangentVector = new Vector(other.getEntity().transform.y - caller.getEntity().transform.y,
-                    -(other.getEntity().transform.x - caller.getEntity().transform.x));
-                tangentVector.normalize();
+            const relativeVelocity = new Vector(otherProps.xVel - myProps.xVel, otherProps.yVel - myProps.yVel);
+            const length = dotProduct(relativeVelocity, tangentVector);
+            const tangentVelocity = new Vector(tangentVector.x, tangentVector.y).multiply(length);
+            const velocityComponentPerpendicularToTangent = relativeVelocity.sub(tangentVelocity);
 
-                const relativeVelocity = new Vector(otherProps.xVel - myProps.xVel, otherProps.yVel - myProps.yVel);
-                const length = dotProduct(relativeVelocity, tangentVector);
-                const tangentVelocity = new Vector(tangentVector.x, tangentVector.y).multiply(length);
-                const velocityComponentPerpendicularToTangent = relativeVelocity.sub(tangentVelocity);
+            // This code makes both circles move.
+            myProps.xVel += velocityComponentPerpendicularToTangent.x;
+            myProps.yVel += velocityComponentPerpendicularToTangent.y;
+            myProps.angVel += Math.random() * 0.2 * Util.choose(1, -1);
 
-                // This code makes both circles move.
-                myProps.xVel += velocityComponentPerpendicularToTangent.x;
-                myProps.yVel += velocityComponentPerpendicularToTangent.y;
-                otherProps.xVel -= velocityComponentPerpendicularToTangent.x;
-                otherProps.yVel -= velocityComponentPerpendicularToTangent.y;
+            otherProps.xVel -= velocityComponentPerpendicularToTangent.x;
+            otherProps.yVel -= velocityComponentPerpendicularToTangent.y;
+            otherProps.angVel += Math.random() * 0.2 * Util.choose(1, -1);
+        };
+
+        const pushFromCenter = (asteroid: Entity, forceSource: Entity) => {
+            const myProps = asteroid.getComponent<SimplePhysicsBody>(SimplePhysicsBody);
+
+            if (myProps == null) {
+                return;
+            }
+
+            const direction = MathUtil.pointDirection(-asteroid.transform.getGlobalPosition().x,
+                                                      asteroid.transform.getGlobalPosition().y,
+                                                      -forceSource.transform.getGlobalPosition().x,
+                                                      forceSource.transform.getGlobalPosition().y);
+            const velocity = MathUtil.lengthDirXY(0.01, direction);
+            asteroid.addComponent(new Force(velocity));
+        };
+
+        coll.onTriggerEnter.register((caller, {other, result}) => {
+            if (other.layer === Layers.Asteroid)
+            {
+                pushUs(caller.getEntity(), other.getEntity());
             }
 
             if (other.layer === Layers.Ship) {
-                other.getEntity().destroy();
+                const explosion = other.getEntity().addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
+                    layer: Layers.Explosion,
+                    radius: 20,
+                    xOff: 0,
+                    yOff: 0
+                }));
+
+                explosion.onTriggerEnter.register((caller, {other, result}) => {
+                    if (other.layer === Layers.Asteroid) {
+                        pushFromCenter(other.getEntity(), caller.getEntity());
+                    }
+                });
+
+                other.getEntity().addComponent(new DestroyMeNextFrame());
             }
         });
     }
