@@ -1,4 +1,5 @@
 import {Component, Entity, GlobalSystem, Key, RenderRect, System, TextDisp} from "lagom-engine";
+import {SiloAmmo, SiloThing} from "../SiloAimer";
 
 export class RocketSelection extends Entity
 {
@@ -27,6 +28,8 @@ export class TypePane extends Entity
         this.addComponent(new TypedLetters(this.text, ""));
     }
 }
+
+export class CompletedRocket extends Component{}
 
 export class TypedLettersTextDisp extends Entity {
     constructor(x: number, y: number, depth: number, readonly text: string) {
@@ -100,6 +103,11 @@ export class TypingSystem extends GlobalSystem {
 
         let matchingEntity = null;
 
+        // Block rocket building if there is a stored rocket.
+        if (typingEntities.some(entity => entity.getComponent(CompletedRocket) != null)) {
+            return;
+        }
+
         if (startedEntities.length > 0 ) {
             // assume only one started
             matchingEntity = startedEntities[0];
@@ -134,6 +142,7 @@ export class TypingSystem extends GlobalSystem {
 
                 if (typedLetters.typed == typedLetters.pattern) {
                     this.resetTyped(typedLetters, text, expectedText);
+                    matchingEntity.addComponent(new CompletedRocket());
                 }
                 else
                 {
@@ -158,5 +167,19 @@ export class TypingSystem extends GlobalSystem {
         if (expectedText) {
             expectedText.pixiObj.text = typedLetters.pattern[0];
         }
+    }
+}
+
+export class RocketLoaderSystem extends System<[CompletedRocket]> {
+    types = () => [CompletedRocket];
+
+    update(delta: number): void
+    {
+        this.runOnEntities((entity: Entity, completedRocket: CompletedRocket) => {
+            const siloAmmo = this.getScene().getEntityWithName("Silo")?.getComponent<SiloAmmo>(SiloAmmo);
+            if (siloAmmo) {
+                siloAmmo.hasRocket = true;
+            }
+        });
     }
 }

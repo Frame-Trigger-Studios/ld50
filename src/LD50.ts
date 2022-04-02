@@ -9,7 +9,7 @@ import {
     Scene,
     SimplePhysics, TextDisp
 } from "lagom-engine";
-import {RocketSelection, TypingSystem} from "./typing/Selection";
+import {RocketLoaderSystem, RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
 import {SiloAimer} from "./SiloAimer";
@@ -19,7 +19,6 @@ import {ScoreDisplay} from "./Code/Score";
 export enum Layers
 {
     Asteroid,
-    Rocket,
     Earth,
     Ship,
     Explosion,
@@ -37,7 +36,6 @@ const matrix = new CollisionMatrix();
 matrix.addCollision(Layers.Asteroid, Layers.Asteroid);
 matrix.addCollision(Layers.Asteroid, Layers.Earth);
 matrix.addCollision(Layers.Asteroid, Layers.Ship);
-matrix.addCollision(Layers.Rocket, Layers.Asteroid);
 matrix.addCollision(Layers.Ship, Layers.Earth);
 matrix.addCollision(Layers.Ship, Layers.Ship);
 matrix.addCollision(Layers.Explosion, Layers.Ship);
@@ -56,6 +54,7 @@ class MainScene extends Scene
         this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
         this.addSystem(new OffScreenDestroyer());
+        this.addSystem(new RocketLoaderSystem());
         const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
