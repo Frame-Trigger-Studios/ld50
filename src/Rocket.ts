@@ -3,7 +3,7 @@ import {
     CircleCollider,
     CollisionSystem,
     Entity,
-    Game,
+    Game, Log,
     MathUtil,
     RenderCircle,
     Rigidbody,
@@ -37,17 +37,17 @@ export class Rocket extends Entity {
         this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
 
         const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
-            layer: Layers.Rocket,
+            layer: Layers.Ship,
             radius: 5,
             xOff: 0,
             yOff: 0
         }));
 
         coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (caller.layer == Layers.Asteroid)
+            if (other.layer == Layers.Asteroid)
             {
                 // TODO EXPLODE!
-                console.log("EXPLODE!");
+                this.destroy();
             }
         });
     }
