@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom";
 import './App.css';
 import {LagomGameComponent} from "lagom-engine";
 import {LD50} from "./LD50";
+import FontFaceObserver from "fontfaceobserver";
 
 const game = new LD50();
 
@@ -15,6 +16,8 @@ const App = () => (
     </div>
 );
 
-ReactDOM.render(
-    <App/>,
-    document.getElementById("root"));
+new FontFaceObserver("myPixelFont").load().then(() => {
+    ReactDOM.render(
+        <App/>,
+        document.getElementById("root"));
+})
