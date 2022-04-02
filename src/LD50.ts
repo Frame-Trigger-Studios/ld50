@@ -65,8 +65,6 @@ class MainScene extends Scene
 
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
-        this.addEntity(new Earth("earth", 213, 120));
-        this.addEntity(new GameManager("Game Manager"));
 
         this.addGUIEntity(new RocketSelection(0, this.camera.height - 60, Layers.GUI));
     }
@@ -74,7 +72,7 @@ class MainScene extends Scene
 
 export class LD50 extends Game
 {
-    static debug = false;
+    static debug = true;
 
     constructor()
     {
