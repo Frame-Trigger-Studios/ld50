@@ -1,7 +1,16 @@
-import {CollisionMatrix, ContinuousCollisionSystem, Game, Log, LogLevel, Scene, SimplePhysics} from "lagom-engine";
+import {
+    CollisionMatrix,
+    ContinuousCollisionSystem,
+    Game,
+    Log,
+    LogLevel,
+    Scene,
+    SimplePhysics,
+    Vector
+} from "lagom-engine";
 import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
 import {TypePane, TypingSystem} from "./typing/Selection";
-import {GameManager, GameManagerSystem} from "./Code/GameManager";
+import {GameManager} from "./Code/GameManager";
 
 export enum Layers
 {
@@ -33,7 +42,7 @@ class MainScene extends Scene
         super.onAdded();
 
         this.addEntity(new Earth("earth", 213, 120));
-        this.addEntity(new Asteroid(10, 19));
+        this.addEntity(new Asteroid(10, 19, new Vector(0.01, 0)));
         this.addEntity(new GameManager("Game Manager"));
 
         this.addSystem(new PhysicsEngine());

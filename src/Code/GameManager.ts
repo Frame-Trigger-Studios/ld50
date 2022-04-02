@@ -1,4 +1,4 @@
-import {Component, Entity, LagomType, MathUtil, Scene, System} from "lagom-engine";
+import {Component, Entity, LagomType, MathUtil, Scene, System, Vector} from "lagom-engine";
 import {GAME_HEIGHT, GAME_WIDTH, EARTH_X, EARTH_Y} from "../LD50";
 import {Asteroid} from "../Physics";
 
@@ -60,8 +60,8 @@ export class GameManagerSystem extends System<[GameData]> {
         }
 
         const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y);
-        const angle = ((Math.random() * 90) - 45)
-        const asteroid = new Asteroid(x, y);
+        const angle = ((Math.random() * 90) - 45);
+        const asteroid = new Asteroid(x, y, new Vector(0, 0));
 
         scene.addEntity(asteroid);
     }

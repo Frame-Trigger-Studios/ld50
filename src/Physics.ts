@@ -74,7 +74,7 @@ export class Earth extends Entity
 
 export class Asteroid extends Entity
 {
-    constructor(x: number, y: number)
+    constructor(x: number, y: number, readonly initialMovement: Vector)
     {
         super("asteroid", x, y);
     }
@@ -85,7 +85,7 @@ export class Asteroid extends Entity
 
         this.addComponent(new RenderCircle(0, 0, 10, 0x140000));
         this.addComponent(new PhysicsMe());
-        this.addComponent(new Force(new Vector( 0.01, 0)));
+        this.addComponent(new Force(this.initialMovement));
         this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
         this.addComponent(new Rigidbody(BodyType.Discrete));
     }
