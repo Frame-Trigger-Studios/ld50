@@ -1,14 +1,14 @@
 import {
     CollisionMatrix,
     ContinuousCollisionSystem,
+    DebugCollisionSystem,
     Game,
     Log,
     LogLevel,
     Scene,
-    SimplePhysics,
-    Vector
+    SimplePhysics
 } from "lagom-engine";
-import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
+import {ApplyForce, Earth, PhysicsEngine} from "./Physics";
 import {TypePane, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
 
@@ -49,25 +49,28 @@ class MainScene extends Scene
         this.addSystem(new SimplePhysics());
         this.addSystem(new GameManagerSystem());
         this.addSystem(new ApplyForce());
-        this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
+        const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
-        // this.addEntity(new TypePane(0, this.camera.height - 100, 1));
+        if (LD50.debug)
+        {
+            this.addGlobalSystem(new DebugCollisionSystem(collSystem));
+        }
+
         this.addSystem(new TypingSystem());
 
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
         this.addEntity(new Earth("earth", 213, 120));
-        // this.addEntity(new Asteroid(10, 19, new Vector(0.1, 0)));
-        // this.addEntity(new Asteroid(200, 19, new Vector(-0.1, 0)));
         this.addEntity(new GameManager("Game Manager"));
 
         this.addEntity(new TypePane(0, this.camera.height - 100, Layers.GUI));
-
     }
 }
 
 export class LD50 extends Game
 {
+    static debug = true;
+
     constructor()
     {
         super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d2b45});

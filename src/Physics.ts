@@ -90,7 +90,7 @@ export class Asteroid extends Entity
         this.addComponent(new Rigidbody(BodyType.Discrete));
         const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
             layer: Layers.Asteroid,
-            radius: 10,
+            radius: this.radius,
             xOff: 0,
             yOff: 0
         }));
