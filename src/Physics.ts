@@ -53,7 +53,7 @@ export class PhysicsEngine extends System<[PhysicsMe, SimplePhysicsBody]>
 
 
             const pullForce = MathUtil.lengthDirXY(1 / dist / 300, -dir);
-            const speed = 0.1;
+            const speed = 0.01;
 
             const movement = pullForce.multiply(delta * speed);
             body.move(movement.x, movement.y);
@@ -74,7 +74,7 @@ export class Earth extends Entity
 
 export class Asteroid extends Entity
 {
-    constructor(x: number, y: number, readonly initialMovement: Vector)
+    constructor(x: number, y: number, readonly radius: number, readonly initialMovement: Vector, readonly linDrag: number)
     {
         super("asteroid", x, y);
     }
@@ -83,10 +83,10 @@ export class Asteroid extends Entity
     {
         super.onAdded();
 
-        this.addComponent(new RenderCircle(0, 0, 10, 0x140000));
+        this.addComponent(new RenderCircle(0, 0, this.radius, 0x140000));
         this.addComponent(new PhysicsMe());
         this.addComponent(new Force(this.initialMovement));
-        this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
+        this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: this.linDrag}));
         this.addComponent(new Rigidbody(BodyType.Discrete));
         const coll = this.addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
             layer: Layers.Asteroid,
