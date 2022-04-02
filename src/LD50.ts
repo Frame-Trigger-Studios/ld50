@@ -1,6 +1,7 @@
 import {CollisionMatrix, Game, Log, LogLevel, Scene} from "lagom-engine";
 import {TypePane} from "./typing/Selection";
 import {Asteroid, Earth, PhysicsEngine} from "./Physics";
+import {SiloAimer} from "./SiloAimer";
 
 enum Layers
 {
@@ -28,6 +29,7 @@ class MainScene extends Scene
         this.addEntity(new Asteroid(10, 19));
 
         this.addSystem(new PhysicsEngine());
+        this.addSystem(new SiloAimer());
     }
 }
 

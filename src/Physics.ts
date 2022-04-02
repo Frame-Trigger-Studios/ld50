@@ -1,4 +1,5 @@
-import {Component, Entity, RenderCircle, System} from "lagom-engine";
+import {Component, Entity, Game, MathUtil, RenderCircle, System} from "lagom-engine";
+import {Silo} from "./SiloAimer";
 
 export class PhysicsMe extends Component
 {
@@ -23,6 +24,7 @@ export class Earth extends Entity
         super.onAdded();
 
         this.addComponent(new RenderCircle(0, 0, 20, 0x0000AA, 0x0000FF));
+        this.addChild(new Silo(0, 0));
     }
 }
 
