@@ -19,7 +19,7 @@ import asteroidsSpr from "./Art/asteroids.png";
 import launchpadSpr from "./Art/launchpad.png";
 import rocketsSpr from "./Art/rockets.png";
 import {SiloShooter} from "./SiloShooter";
-import {ScoreDisplay} from "./Code/Score";
+import {OffScreenPassenger, ScoreDisplay} from "./Code/Score";
 import {DestroySystem} from "./DestroyMeNextFrame";
 
 export enum Layers
@@ -64,6 +64,7 @@ class MainScene extends Scene
         this.addSystem(new OffScreenDestroyer());
         this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
+        this.addSystem(new OffScreenPassenger());
         const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());

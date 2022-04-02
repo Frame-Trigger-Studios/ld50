@@ -49,8 +49,10 @@ export class Rocket extends Entity {
 
         if (this.rocketType == RocketType.MISSILE) {
             this.addComponent(new Missile(SMALL_MISSILE_RADIUS));
+            this.addComponent(new OffScreenDestroyable());
         } else if (this.rocketType == RocketType.ICBM) {
             this.addComponent(new Missile(BIG_MISSILE_RADIUS));
+            this.addComponent(new OffScreenDestroyable());
         } else if (this.rocketType == RocketType.PASSENGER) {
             this.addComponent(new PassengerShip(SMALL_PASSENGER_COUNT));
         } else if (this.rocketType == RocketType.STARSHIP) {
@@ -62,7 +64,6 @@ export class Rocket extends Entity {
             mousePos.x, mousePos.y);
         const velocity = MathUtil.lengthDirXY(0.1, -direction);
 
-        this.addComponent(new OffScreenDestroyable());
         // this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0xAA00FF));
         this.addComponent(new Rigidbody(BodyType.Discrete));
         this.addComponent(new Force(velocity));
