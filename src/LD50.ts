@@ -37,6 +37,7 @@ export const GAME_HEIGHT = 240;
 export const EARTH_X = GAME_WIDTH / 2;
 export const EARTH_Y = GAME_HEIGHT / 2;
 
+// Don't reorder these :)
 export enum RocketType { STARSHIP, PASSENGER, ICBM, MISSILE, NONE}
 
 
@@ -86,7 +87,7 @@ class MainScene extends Scene
 
 export class LD50 extends Game
 {
-    static debug = false;
+    static debug = true;
 
     constructor()
     {
