@@ -36,6 +36,8 @@ export const GAME_HEIGHT = 240;
 export const EARTH_X = GAME_WIDTH / 2;
 export const EARTH_Y = GAME_HEIGHT / 2;
 
+export enum RocketType { NONE, MISSILE, ICBM, PASSENGER, STARSHIP}
+
 
 const matrix = new CollisionMatrix();
 matrix.addCollision(Layers.Asteroid, Layers.Asteroid);

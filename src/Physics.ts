@@ -171,7 +171,7 @@ export class Asteroid extends Entity
                                                       asteroid.transform.getGlobalPosition().y,
                                                       -forceSource.transform.getGlobalPosition().x,
                                                       forceSource.transform.getGlobalPosition().y);
-            const velocity = MathUtil.lengthDirXY(0.01, direction);
+            const velocity = MathUtil.lengthDirXY(0.1, direction);
             asteroid.addComponent(new Force(velocity));
         };
 
@@ -184,7 +184,7 @@ export class Asteroid extends Entity
             if (other.layer === Layers.Ship) {
                 const explosion = other.getEntity().addComponent(new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
                     layer: Layers.Explosion,
-                    radius: 20,
+                    radius: 30,
                     xOff: 0,
                     yOff: 0
                 }));
