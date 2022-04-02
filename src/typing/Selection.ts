@@ -228,8 +228,6 @@ export class RocketLoaderSystem extends System<[CompletedRocket]>
             if (siloAmmo && !siloAmmo.hasRocket)
             {
                 siloAmmo.setRocket(completedRocket.rocketType);
-                const texture = this.getScene().game.getResource("rockets").texture(0, 0);
-                silo?.addComponent(new LaunchpadSprite(texture as never));
             }
         });
     }

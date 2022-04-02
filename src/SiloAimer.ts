@@ -13,11 +13,14 @@ export class SiloAmmo extends Component {
     setRocket(rocket: RocketType) {
         this.rocket = rocket;
         this.hasRocket = true;
+        const texture = this.getScene().game.getResource("rockets").texture(rocket, 0);
+        this.getEntity().addComponent(new LaunchpadSprite(texture as never));
     }
 
     removeRocket() {
         this.rocket = RocketType.NONE;
         this.hasRocket = false;
+        this.getEntity().getComponent(LaunchpadSprite)?.destroy();
     }
 }
 

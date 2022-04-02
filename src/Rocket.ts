@@ -52,6 +52,7 @@ export class Rocket extends Entity {
         this.addComponent(new Rigidbody(BodyType.Discrete));
         this.addComponent(new Force(velocity));
         this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
+        // TODO change the 3 to the rocketType
         const texture = this.getScene().game.getResource("rockets").texture(3, 0);
         this.addComponent(new Sprite(texture, {xAnchor: 0.5, yAnchor: 0.5, rotation: -direction + MathUtil.degToRad(90)}));
 

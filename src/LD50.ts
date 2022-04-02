@@ -1,4 +1,4 @@
-import {ApplyForce, Asteroid, Earth, PhysicsEngine} from "./Physics";
+import {ApplyForce, Earth, PhysicsEngine} from "./Physics";
 import {
     CollisionMatrix,
     ContinuousCollisionSystem,
@@ -7,7 +7,8 @@ import {
     Log,
     LogLevel,
     Scene,
-    SimplePhysics, TextDisp, SpriteSheet
+    SimplePhysics,
+    SpriteSheet
 } from "lagom-engine";
 import {RocketLoaderSystem, RocketSelection, TypingSystem} from "./typing/Selection";
 import {GameManager, GameManagerSystem} from "./Code/GameManager";
@@ -36,7 +37,7 @@ export const GAME_HEIGHT = 240;
 export const EARTH_X = GAME_WIDTH / 2;
 export const EARTH_Y = GAME_HEIGHT / 2;
 
-export enum RocketType { NONE, MISSILE, ICBM, PASSENGER, STARSHIP}
+export enum RocketType { STARSHIP, PASSENGER, ICBM, MISSILE, NONE}
 
 
 const matrix = new CollisionMatrix();
