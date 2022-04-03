@@ -137,18 +137,7 @@ export class Rocket extends Entity
                 break;
         }
 
-        const here = this.transform.getGlobalPosition();
-        const explosionSpr = this.getScene().addEntity(new Entity("explosionspr", here.x, here.y, Layers.Explosion));
-        explosionSpr.addComponent(new AnimatedSpriteController(0, [
-            {
-                id: 0,
-                textures: this.getScene().game.getResource(texture).textureSliceFromSheet(),
-                config: {
-                    xAnchor: 0.5, yAnchor: 0.5,
-                    rotation: MathUtil.degToRad(Util.choose(0, 90, 180, 270)),
-                    animationEndEvent: () => explosionSpr.destroy(), animationSpeed: 60
-                }
-            }]));
+        this.getScene().addEntity(new Explosion(this, texture));
 
         const missile = this.getComponent<Missile>(Missile);
         if (!missile)
@@ -182,5 +171,33 @@ export class Rocket extends Entity
 
         // Allow a frame to pass so that each asteroid can be collided with.
         this.addComponent(new DestroyMeNextFrame());
+    }
+}
+
+/**
+ * Self destructing explosion.
+ */
+export class Explosion extends Entity
+{
+    constructor(refEntity: Entity, readonly texName: string)
+    {
+        const here = refEntity.transform.getGlobalPosition();
+        super("explosionSpr", here.x, here.y, Layers.Explosion);
+    }
+
+    onAdded()
+    {
+        super.onAdded();
+        this.addComponent(new AnimatedSpriteController(0, [
+            {
+                id: 0,
+                textures: this.getScene().game.getResource(this.texName).textureSliceFromSheet(),
+                config: {
+                    xAnchor: 0.5, yAnchor: 0.5,
+                    rotation: MathUtil.degToRad(Util.choose(0, 90, 180, 270)),
+                    animationEndEvent: () => this.destroy(), animationSpeed: 60
+                }
+            }]));
+
     }
 }

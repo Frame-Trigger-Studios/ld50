@@ -11,6 +11,7 @@ import {Silo} from "./SiloAimer";
 import {Layers} from "../LD50";
 import {Score} from "../Global/Score";
 import {Asteroid} from "./Asteroid";
+import {Explosion} from "./Rocket";
 
 export class Earth extends Entity
 {
@@ -40,6 +41,9 @@ export class Earth extends Entity
         coll.onTriggerEnter.register((caller, {other, result}) => {
             if (other.layer == Layers.Asteroid)
             {
+                // Add an explosion
+                this.getScene().addEntity(new Explosion(other.getEntity(), "smallexplosion"));
+
                 // TODO variable based on size or speed??
                 let amountToLose = 500_000_000 * (other.getEntity() as Asteroid).radius;
                 amountToLose += MathUtil.randomRange(-50_000_000, 50_000_000);
