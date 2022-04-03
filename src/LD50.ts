@@ -2,14 +2,16 @@ import {ApplyForce, DiscreteRbodyCollisionSystem, PhysicsEngine} from "./Systems
 import {
     AudioAtlas,
     CollisionMatrix,
-    ContinuousCollisionSystem,
-    DebugCollisionSystem, FrameTriggerSystem, Diagnostics,
+    DebugCollisionSystem,
+    Diagnostics,
+    FrameTriggerSystem,
     Game,
     Log,
     LogLevel,
-    Scene, ScreenShaker,
+    Scene,
     SimplePhysics,
-    SpriteSheet, TimerSystem
+    SpriteSheet,
+    TimerSystem
 } from "lagom-engine";
 import {RocketSelection, TypingSystem} from "./Game/RocketSelection";
 import {GameManager, GameManagerSystem} from "./Global/GameManager";
@@ -28,7 +30,7 @@ import grooveMusic from "./Sound/music.mp3";
 import {ClickListener, ScreenCard} from "./Global/SplashScreens";
 import youLoseScreen from "./Art/placeholder/game-over.png";
 import startScreen from "./Art/placeholder/start.png";
-import mute from "./Art/placeholder/mute.png";
+import mute from "./Art/mute.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
 
