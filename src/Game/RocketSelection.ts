@@ -1,9 +1,6 @@
-import {Component, Entity, GlobalSystem, Key, RenderRect, Sprite, System, TextDisp} from "lagom-engine";
-import {SiloAmmo} from "./SiloAimer";
+import {Component, Entity, GlobalSystem, Key, Sprite, TextDisp} from "lagom-engine";
 import {RocketType} from "../LD50";
 import {CompletedRocket} from "./RocketLoader";
-
-
 
 class RocketTypeModifier extends Component {
     constructor(public type: RocketType) {
@@ -21,11 +18,10 @@ export class RocketSelection extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new RenderRect(0, 0, 150, 60, 0xFFFFFF, 0x000000));
         this.addChild(new TypePane(0, 0, 1, "QWER", RocketType.MISSILE));
-        this.addChild(new TypePane(70, 0, 1, "REWQ", RocketType.ICBM));
+        this.addChild(new TypePane(80, 0, 1, "REWQWQ", RocketType.ICBM));
         this.addChild(new TypePane(0, 30, 1, "ASDF", RocketType.PASSENGER));
-        this.addChild(new TypePane(70, 30, 1, "FDSA", RocketType.STARSHIP));
+        this.addChild(new TypePane(80, 30, 1, "FDSASA", RocketType.STARSHIP));
     }
 }
 
@@ -38,9 +34,17 @@ export class TypePane extends Entity
 
     onAdded()
     {
+        const texture = this.getScene().game.getResource("rockets").texture(this.rocketType, 0);
+        this.addComponent(new Sprite(texture, {
+            xAnchor: 0,
+            yAnchor: 0.1,
+            xOffset: -8 ,
+        }));
+        // Big rockets have even enum values
+        const spriteWidth = (this.rocketType % 2 == 0) ? 20 : 16;
         super.onAdded();
-        this.addChild(new PreviewLettersTextDisp(5, 5, 0, this.text));
-        this.addChild(new TypedLettersTextDisp(5, 5, 0, ""));
+        this.addChild(new PreviewLettersTextDisp(spriteWidth, 5, 0, this.text));
+        this.addChild(new TypedLettersTextDisp(spriteWidth, 5, 0, ""));
         this.addComponent(new TypedLetters(this.text, ""));
         this.addComponent(new RocketTypeModifier(this.rocketType));
     }

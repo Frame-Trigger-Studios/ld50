@@ -1,4 +1,3 @@
-
 import {Component, Entity, Game, MathUtil, Sprite, System,} from "lagom-engine";
 import {EARTH_X, EARTH_Y, RocketType} from "../LD50";
 import {LaunchpadSprite} from "./RocketSelection";
