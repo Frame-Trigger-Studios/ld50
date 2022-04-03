@@ -122,12 +122,13 @@ export class Rocket extends Entity
 
     explode()
     {
+        const texture = this.rocketType > 2 ? "bigexplosion2" : "bigexplosion3";
         const here = this.transform.getGlobalPosition();
         const explosionSpr = this.getScene().addEntity(new Entity("explosionspr", here.x, here.y, Layers.Explosion));
         explosionSpr.addComponent(new AnimatedSpriteController(0, [
             {
                 id: 0,
-                textures: this.getScene().game.getResource("bigexplosion2").textureSliceFromSheet(),
+                textures: this.getScene().game.getResource(texture).textureSliceFromSheet(),
                 config: {
                     xAnchor: 0.5, yAnchor: 0.5,
                     rotation: MathUtil.degToRad(Util.choose(0, 90, 180, 270)),
