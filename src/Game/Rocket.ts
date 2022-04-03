@@ -55,7 +55,7 @@ export class Rocket extends Entity
         super.onAdded();
 
         let speedMulti = 0.1;
-        let colliderSize = 5;
+        let colliderSize = 7;
 
         if (this.rocketType == RocketType.MISSILE)
         {
@@ -65,7 +65,7 @@ export class Rocket extends Entity
         else if (this.rocketType == RocketType.ICBM)
         {
             speedMulti = 0.06;
-            colliderSize = 8;
+            colliderSize = 12;
             this.addComponent(new Missile(BIG_MISSILE_RADIUS));
             this.addComponent(new OffScreenDestroyable());
         }
