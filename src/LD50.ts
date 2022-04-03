@@ -1,15 +1,18 @@
 import {ApplyForce, DiscreteRbodyCollisionSystem, PhysicsEngine} from "./Systems/Physics";
 import {
+    AnimatedSprite,
     AudioAtlas,
     CollisionMatrix,
     DebugCollisionSystem,
     Diagnostics,
+    Entity,
     FrameTriggerSystem,
     Game,
     Log,
     LogLevel,
     Scene,
     SimplePhysics,
+    Sprite,
     SpriteSheet,
     TimerSystem
 } from "lagom-engine";
@@ -26,18 +29,23 @@ import {OffScreenPassenger, ScoreDisplay, ScoreUpdater} from "./Global/Score";
 import {DestroySystem} from "./Systems/DestroyMeNextFrame";
 import {RocketLoaderSystem} from "./Game/RocketLoader";
 import {Earth} from "./Game/Earth";
-import grooveMusic from "./Sound/music.mp3";
+import grooveMusic from "./Sound/LD50-v1.mp3";
 import {ClickListener, ScreenCard} from "./Global/SplashScreens";
 import youLoseScreen from "./Art/placeholder/game-over.png";
-import startScreen from "./Art/placeholder/start.png";
+import startScreen from "./Art/startscreen.png";
+import background from "./Art/background.png";
 import mute from "./Art/mute.png";
 import bigExplosion2 from "./Art/bigexplosion2.png";
 import bigExplosion3 from "./Art/bigexplosion3.png";
+import smallExplosion from "./Art/smallexplosion.png";
+import smallExplosionAlt from "./Art/smallexplosionalt.png";
+import fireSpr from "./Art/fire.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
 
 export enum Layers
 {
+    Background,
     Asteroid,
     Earth,
     Ship,
@@ -50,6 +58,11 @@ export const GAME_WIDTH = 426;
 export const GAME_HEIGHT = 240;
 export const EARTH_X = GAME_WIDTH / 2;
 export const EARTH_Y = GAME_HEIGHT / 2;
+
+export const SECONDS_TO_MAX_ASTEROID_SPAWN_RATE = 240;
+export const ASTEROID_SPEED_MULTIPLIER = 1;
+export const EARTH_GRAVITY_MULTIPLIER = 1;
+
 
 // Don't reorder these :)
 export enum RocketType { STARSHIP, PASSENGER, ICBM, MISSILE, NONE}
@@ -78,6 +91,9 @@ export class MainScene extends Scene
         this.addGlobalSystem(new TimerSystem());
         this.addGlobalSystem(new ClickListener());
         this.addGUIEntity(new SoundManager());
+
+        // this.addEntity(new Entity("background", 0, 0, Layers.Background))
+
     }
 
     startGame()
@@ -93,13 +109,18 @@ export class MainScene extends Scene
         this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
         this.addSystem(new OffScreenPassenger());
+        // TODO before enabling, fix the mouse stuff
+        // this.addGlobalSystem(new ScreenShaker(EARTH_X, EARTH_Y));
         const collSystem = this.addGlobalSystem(new DiscreteRbodyCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
         this.addSystem(new SiloShooter());
 
+        Log.logLevel = LogLevel.NONE;
+
         if (LD50.debug)
         {
+            Log.logLevel = LogLevel.ALL;
             this.addGUIEntity(new Diagnostics("white", 8, true)).transform.x = 150;
             this.addGlobalSystem(new DebugCollisionSystem(collSystem));
         }
@@ -117,17 +138,13 @@ export class MainScene extends Scene
 export class LD50 extends Game
 {
     static debug = false;
-    static muted = true;
+    static muted = LD50.debug;
     static musicPlaying = false;
     static audioAtlas: AudioAtlas = new AudioAtlas();
 
     constructor()
     {
         super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x130026});
-
-        // TODO enable this before deploy
-        // Log.logLevel = LogLevel.ERROR;
-        Log.logLevel = LogLevel.ALL;
 
         const music = LD50.audioAtlas.load("music", grooveMusic);
         music.loop(true);
@@ -140,9 +157,13 @@ export class LD50 extends Game
         this.addResource("earth", new SpriteSheet(earthSpr, 64, 64));
         this.addResource("bigexplosion2", new SpriteSheet(bigExplosion2, 128, 128));
         this.addResource("bigexplosion3", new SpriteSheet(bigExplosion3, 128, 128));
+        this.addResource("smallexplosion", new SpriteSheet(smallExplosion, 32, 32));
+        this.addResource("smallexplosion2", new SpriteSheet(smallExplosionAlt, 32, 32));
         this.addResource("asteroids", new SpriteSheet(asteroidsSpr, 16, 16));
         this.addResource("launchpad", new SpriteSheet(launchpadSpr, 18, 32));
         this.addResource("rockets", new SpriteSheet(rocketsSpr, 32, 32));
+        this.addResource("fire", new SpriteSheet(fireSpr, 10, 10));
+        this.addResource("background", new SpriteSheet(background, 426, 240));
 
         WebFont.load({
             custom: {

@@ -2,6 +2,7 @@ import {Component, Entity, MathUtil, System, TextDisp} from "lagom-engine";
 import {GAME_HEIGHT, GAME_WIDTH} from "../LD50";
 import {PassengerShip} from "../Game/Rocket";
 import {EndScreen} from "./SplashScreens";
+import {GameData, GameManager} from "./GameManager";
 
 
 export class Score extends Component {
@@ -32,7 +33,7 @@ export class ScoreDisplay extends Entity {
         this.addComponent(new TextDisp(10, 8, score.getScoreText(), {
             fontSize: 10,
             fontFamily: "myPixelFont",
-            fill: 0xffffff,
+            fill: 0x6ceded,
         }));
     }
 }
@@ -64,11 +65,12 @@ export class ScoreUpdater extends System<[Score, TextDisp]> {
                 }
 
                 if (score.remaining <= 0) {
+                    const elapsed = this.scene.getEntityWithName<GameManager>("Game Manager")?.getComponent<GameData>(GameData)?.elapsedTime || 0;
                     const game = this.getScene().getGame();
                     this.getScene().entities.forEach(x => x.destroy());
                     this.getScene().systems.forEach(x => x.destroy());
                     this.getScene().globalSystems.forEach(x => x.destroy());
-                    game.setScene(new EndScreen(game));
+                    game.setScene(new EndScreen(game, score.saved, elapsed));
                 }
             });
         }

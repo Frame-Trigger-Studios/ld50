@@ -31,9 +31,10 @@ jobs:
       working-directory: main
     - run: npm run customBuild
       working-directory: main
+      # TODO send this zip to itch
     - run: zip -r build.zip build
       working-directory: main
     - uses: actions/upload-artifact@v3.0.0
       with:
-        name: build.zip
-        path: main/build.zip
+        name: build
+        path: main/build

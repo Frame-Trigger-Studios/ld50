@@ -1,5 +1,12 @@
-import {Component, Entity, LagomType, MathUtil, Scene, System} from "lagom-engine";
-import {GAME_HEIGHT, GAME_WIDTH, EARTH_X, EARTH_Y} from "../LD50";
+import {Component, Entity, LagomType, Log, MathUtil, Scene, System} from "lagom-engine";
+import {
+    GAME_HEIGHT,
+    GAME_WIDTH,
+    EARTH_X,
+    EARTH_Y,
+    ASTEROID_SPEED_MULTIPLIER,
+    SECONDS_TO_MAX_ASTEROID_SPAWN_RATE
+} from "../LD50";
 import {Asteroid} from "../Game/Asteroid";
 
 export class GameManager extends Entity {
@@ -10,11 +17,9 @@ export class GameManager extends Entity {
     }
 }
 
-const asteroidSpawnRate = 500;
-
 export class GameData extends Component {
     public elapsedTime = 0;
-    public msUntilNextAsteroid = asteroidSpawnRate;
+    public msUntilNextAsteroid = 1500;
 }
 
 export class GameManagerSystem extends System<[GameData]> {
@@ -35,11 +40,10 @@ export class GameManagerSystem extends System<[GameData]> {
             gameData.msUntilNextAsteroid -= delta;
             if (gameData.msUntilNextAsteroid <= 0) {
                 this.spawnAsteroid(this.getScene());
-                let nextSpawnMs = 100;
-                if (gameData.elapsedTime < 180_000) {
-                    nextSpawnMs = MathUtil.lerp(1500, 100, gameData.elapsedTime / 180_000);
+                let nextSpawnMs = 200;
+                if (gameData.elapsedTime < SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000) {
+                    nextSpawnMs = MathUtil.lerp(1500, 200, gameData.elapsedTime / (SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000));
                 }
-                console.log(nextSpawnMs);
                 gameData.msUntilNextAsteroid = nextSpawnMs;
             }
         });
@@ -69,7 +73,7 @@ export class GameManagerSystem extends System<[GameData]> {
         // 1 - 3
         const radius = 2 + Math.floor(Math.random() * 4);
         const linearDrag = Math.random() * 0.00001;
-        const speed = randomRange(0.01, 0.05);
+        const speed = randomRange(0.01, 0.05) * ASTEROID_SPEED_MULTIPLIER;
         const variance = randomRange(-Math.PI/4, Math.PI/4);
 
         const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y) + variance;

@@ -95,7 +95,7 @@ export class Asteroid extends Entity
             this.transform.getGlobalPosition().y,
             -forceSource.transform.getGlobalPosition().x,
             forceSource.transform.getGlobalPosition().y);
-        const velocity = MathUtil.lengthDirXY(0.1 * forceScalar, direction);
+        const velocity = MathUtil.lengthDirXY(0.05 * forceScalar, direction);
         this.addComponent(new Force(velocity));
     };
 }
