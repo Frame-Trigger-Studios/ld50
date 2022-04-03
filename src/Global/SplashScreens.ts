@@ -81,7 +81,7 @@ export class ClickListener extends GlobalSystem
     {
         this.runOnComponents((clickActions: ClickAction[]) => {
 
-            if (Game.mouse.isButtonPressed(0) || this.getScene().game.keyboard.isKeyPressed(Key.Space, Key.Enter))
+            if (this.scene.game.mouse.isButtonPressed(0) || this.getScene().game.keyboard.isKeyPressed(Key.Space, Key.Enter))
             {
                 for (const action of clickActions)
                 {

@@ -7,7 +7,9 @@ import {
     Entity,
     Game,
     MathUtil,
-    Rigidbody, ScreenShake,
+    Mouse,
+    Rigidbody,
+    ScreenShake,
     SimplePhysicsBody,
     Sprite,
     Util
@@ -85,7 +87,7 @@ export class Rocket extends Entity
             this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(BIG_PASSENGER_COUNT);
         }
 
-        const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());
+        const mousePos = this.scene.camera.viewToWorld(this.scene.game.mouse.getPosX(), this.scene.game.mouse.getPosY());
         const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y, mousePos.x, mousePos.y);
         const velocity = MathUtil.lengthDirXY(speedMulti, -direction);
 
