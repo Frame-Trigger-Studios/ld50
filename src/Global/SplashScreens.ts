@@ -13,7 +13,6 @@ import {GAME_WIDTH, MainScene} from "../LD50";
 
 export class ScreenCard extends Entity
 {
-    // eslint-disable-next-line
     constructor(readonly texture: any, readonly clickAction: number, layer = 0)
     {
         super("card", 0, 0, layer);

@@ -1,4 +1,4 @@
-import {ApplyForce, PhysicsEngine} from "./Systems/Physics";
+import {ApplyForce, DiscreteRbodyCollisionSystem, PhysicsEngine} from "./Systems/Physics";
 import {
     AudioAtlas,
     CollisionMatrix,
@@ -88,7 +88,7 @@ export class MainScene extends Scene
         this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
         this.addSystem(new OffScreenPassenger());
-        const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
+        const collSystem = this.addGlobalSystem(new DiscreteRbodyCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
         this.addSystem(new SiloShooter());
@@ -111,7 +111,7 @@ export class MainScene extends Scene
 export class LD50 extends Game
 {
     static debug = true;
-    static muted = false;
+    static muted = true;
     static musicPlaying = false;
     static audioAtlas: AudioAtlas = new AudioAtlas();
 

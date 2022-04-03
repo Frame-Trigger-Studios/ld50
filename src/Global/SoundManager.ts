@@ -1,6 +1,6 @@
 import {AnimatedSpriteController, Button, Component, Entity, Mouse, SpriteSheet, System, Timer} from "lagom-engine";
 
-import {Layers, LD50} from "../LD50";
+import {GAME_WIDTH, Layers, LD50} from "../LD50";
 
 class MuteComp extends Component
 {
@@ -31,7 +31,7 @@ export class SoundManager extends Entity
 {
     constructor()
     {
-        super("audio", 0, 0, Layers.GUI);
+        super("audio", GAME_WIDTH - 16, 0, Layers.GUI);
 
         this.startMusic();
     }
