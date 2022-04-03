@@ -92,8 +92,8 @@ export class MainScene extends Scene
         this.addGlobalSystem(new ClickListener());
         this.addGUIEntity(new SoundManager());
 
-        this.addEntity(new Entity("background", 0, 0, Layers.Background))
-            .addComponent(new AnimatedSprite(this.game.getResource("background").textureSliceFromSheet()));
+        // this.addEntity(new Entity("background", 0, 0, Layers.Background))
+
     }
 
     startGame()

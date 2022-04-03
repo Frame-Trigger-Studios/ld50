@@ -2,7 +2,8 @@ import {
     BodyType,
     CircleCollider,
     CollisionSystem,
-    Entity, MathUtil,
+    Entity,
+    MathUtil,
     RenderCircle,
     Rigidbody,
     Sprite
@@ -22,6 +23,8 @@ export class Earth extends Entity
         super.onAdded();
 
         this.addComponent(new RenderCircle(0, 0, this.radius, 0x0000AA, 0x0000FF));
+        this.addComponent(new Sprite(this.getScene().game.getResource("background").texture(0, 0),
+            {xOffset: -this.transform.x, yOffset: -this.transform.y}));
         this.addComponent(new Sprite(this.getScene().game.getResource("earth").texture(0, 0), {
             xAnchor: 0.5,
             yAnchor: 0.5
