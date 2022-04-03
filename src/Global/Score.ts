@@ -68,7 +68,7 @@ export class ScoreUpdater extends System<[Score, TextDisp]> {
                     this.getScene().entities.forEach(x => x.destroy());
                     this.getScene().systems.forEach(x => x.destroy());
                     this.getScene().globalSystems.forEach(x => x.destroy());
-                    game.setScene(new EndScreen(game));
+                    game.setScene(new EndScreen(game, score.saved));
                 }
             });
         }

@@ -44,10 +44,8 @@ export class Earth extends Entity
                 // Add an explosion
                 this.getScene().addEntity(new Explosion(other.getEntity(), "smallexplosion"));
 
-                // TODO variable based on size or speed??
-                let amountToLose = 500_000_000 * (other.getEntity() as Asteroid).radius;
-                amountToLose += MathUtil.randomRange(-50_000_000, 50_000_000);
-                amountToLose -= 500_000_000;
+                let amountToLose = 500_000_000 * ((other.getEntity() as Asteroid).radius - 1);
+                amountToLose += MathUtil.randomRange(-250_000_000, 250_000_000);
                 this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(amountToLose);
                 other.getEntity().destroy();
             }
