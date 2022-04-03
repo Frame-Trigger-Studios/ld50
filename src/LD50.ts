@@ -29,7 +29,7 @@ import {OffScreenPassenger, ScoreDisplay, ScoreUpdater} from "./Global/Score";
 import {DestroySystem} from "./Systems/DestroyMeNextFrame";
 import {RocketLoaderSystem} from "./Game/RocketLoader";
 import {Earth} from "./Game/Earth";
-import grooveMusic from "./Sound/LD50-v1.mp3";
+import grooveMusic from "./Sound/LD50-v1-1.mp3";
 import {ClickListener, ScreenCard} from "./Global/SplashScreens";
 import youLoseScreen from "./Art/placeholder/game-over.png";
 import startScreen from "./Art/startscreen.png";
