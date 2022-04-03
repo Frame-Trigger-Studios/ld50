@@ -20,7 +20,9 @@ import {Score} from "../Global/Score";
 const SMALL_MISSILE_RADIUS = 30;
 const BIG_MISSILE_RADIUS = 50;
 const SMALL_PASSENGER_COUNT = 100;
+const SMALL_PASSENGER_EXPLOSION_RADIUS = 10;
 const BIG_PASSENGER_COUNT = 400;
+const BIG_PASSENGER_EXPLOSION_RADIUS = 30;
 
 export class PassengerShip extends Component
 {
@@ -68,12 +70,14 @@ export class Rocket extends Entity
         } else if (this.rocketType == RocketType.PASSENGER)
         {
             speedMulti = 0.04;
+            this.addComponent(new Missile(SMALL_PASSENGER_EXPLOSION_RADIUS));
             this.addComponent(new PassengerShip(SMALL_PASSENGER_COUNT));
             this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(SMALL_PASSENGER_COUNT);
         } else if (this.rocketType == RocketType.STARSHIP)
         {
             speedMulti = 0.02;
             colliderSize = 8;
+            this.addComponent(new Missile(BIG_PASSENGER_EXPLOSION_RADIUS));
             this.addComponent(new PassengerShip(BIG_PASSENGER_COUNT));
             this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(BIG_PASSENGER_COUNT);
         }
