@@ -15,6 +15,7 @@ import {EARTH_X, EARTH_Y, Layers, RocketType} from "../LD50";
 import {OffScreenDestroyable} from "../Systems/OffScreenDestroyer";
 import {DestroyMeNextFrame} from "../Systems/DestroyMeNextFrame";
 import {Asteroid} from "./Asteroid";
+import {Score} from "../Global/Score";
 
 const SMALL_MISSILE_RADIUS = 30;
 const BIG_MISSILE_RADIUS = 50;
@@ -68,11 +69,13 @@ export class Rocket extends Entity
         {
             speedMulti = 0.04;
             this.addComponent(new PassengerShip(SMALL_PASSENGER_COUNT));
+            this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(SMALL_PASSENGER_COUNT);
         } else if (this.rocketType == RocketType.STARSHIP)
         {
             speedMulti = 0.02;
             colliderSize = 8;
             this.addComponent(new PassengerShip(BIG_PASSENGER_COUNT));
+            this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(BIG_PASSENGER_COUNT);
         }
 
         const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());

@@ -83,7 +83,7 @@ class MainScene extends Scene
 
         this.addEntity(new Earth("earth", 213, 120));
         this.addEntity(new GameManager("Game Manager"));
-        this.addEntity(new ScoreDisplay("Score Display", 0, 0, Layers.GUI));
+        this.addEntity(new ScoreDisplay("Score", 0, 0, Layers.GUI));
 
         this.addGUIEntity(new RocketSelection(0, this.camera.height - 60, Layers.GUI));
     }
