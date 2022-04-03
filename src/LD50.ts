@@ -33,6 +33,8 @@ import startScreen from "./Art/placeholder/start.png";
 import mute from "./Art/mute.png";
 import bigExplosion2 from "./Art/bigexplosion2.png";
 import bigExplosion3 from "./Art/bigexplosion3.png";
+import smallExplosion from "./Art/smallexplosion.png";
+import smallExplosionAlt from "./Art/smallexplosionalt.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
 
@@ -140,6 +142,8 @@ export class LD50 extends Game
         this.addResource("earth", new SpriteSheet(earthSpr, 64, 64));
         this.addResource("bigexplosion2", new SpriteSheet(bigExplosion2, 128, 128));
         this.addResource("bigexplosion3", new SpriteSheet(bigExplosion3, 128, 128));
+        this.addResource("smallexplosion", new SpriteSheet(smallExplosion, 32, 32));
+        this.addResource("smallexplosion2", new SpriteSheet(smallExplosionAlt, 32, 32));
         this.addResource("asteroids", new SpriteSheet(asteroidsSpr, 16, 16));
         this.addResource("launchpad", new SpriteSheet(launchpadSpr, 18, 32));
         this.addResource("rockets", new SpriteSheet(rocketsSpr, 32, 32));
