@@ -2,13 +2,14 @@ import {
     BodyType,
     CircleCollider,
     CollisionSystem,
-    Entity,
+    Entity, MathUtil,
     RenderCircle,
     Rigidbody,
     Sprite
 } from "lagom-engine";
 import {Silo} from "./SiloAimer";
 import {Layers} from "../LD50";
+import {Score} from "../Global/Score";
 
 export class Earth extends Entity
 {
@@ -38,7 +39,9 @@ export class Earth extends Entity
         coll.onTriggerEnter.register((caller, {other, result}) => {
             if (other.layer == Layers.Asteroid)
             {
-                // TODO lose health / lose the game
+                // TODO variable based on size or speed??
+                const amountToLose = MathUtil.randomRange(1_500_000_000, 2_000_000_000);
+                this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(amountToLose);
                 other.getEntity().destroy();
             }
         });
