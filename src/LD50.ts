@@ -51,6 +51,11 @@ export const GAME_HEIGHT = 240;
 export const EARTH_X = GAME_WIDTH / 2;
 export const EARTH_Y = GAME_HEIGHT / 2;
 
+export const SECONDS_TO_MAX_ASTEROID_SPAWN_RATE = 180;
+export const ASTEROID_SPEED_MULTIPLIER = 1;
+export const EARTH_GRAVITY_MULTIPLIER = 1;
+
+
 // Don't reorder these :)
 export enum RocketType { STARSHIP, PASSENGER, ICBM, MISSILE, NONE}
 

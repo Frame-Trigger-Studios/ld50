@@ -1,5 +1,5 @@
 import {Collider, CollisionSystem, LagomType, Component, MathUtil, Rigidbody, SimplePhysicsBody, System, Vector} from "lagom-engine";
-import {EARTH_X, EARTH_Y} from "../LD50";
+import {EARTH_GRAVITY_MULTIPLIER, EARTH_X, EARTH_Y} from "../LD50";
 
 export class Force extends Component
 {
@@ -80,7 +80,7 @@ export class PhysicsEngine extends System<[PhysicsMe, SimplePhysicsBody]>
 
 
             const pullForce = MathUtil.lengthDirXY(1 / dist / 300, -dir);
-            const speed = 0.01;
+            const speed = 0.01 * EARTH_GRAVITY_MULTIPLIER;
 
             const movement = pullForce.multiply(delta * speed);
             body.move(movement.x, movement.y);
