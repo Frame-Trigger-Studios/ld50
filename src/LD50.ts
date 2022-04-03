@@ -1,18 +1,17 @@
 import {ApplyForce, DiscreteRbodyCollisionSystem, PhysicsEngine} from "./Systems/Physics";
 import {
-    AnimatedSprite,
     AudioAtlas,
+    Camera,
     CollisionMatrix,
     DebugCollisionSystem,
     Diagnostics,
-    Entity,
     FrameTriggerSystem,
     Game,
     Log,
     LogLevel,
-    Scene,
+    MathUtil,
+    Scene, ScreenShaker,
     SimplePhysics,
-    Sprite,
     SpriteSheet,
     TimerSystem
 } from "lagom-engine";
@@ -42,6 +41,7 @@ import smallExplosionAlt from "./Art/smallexplosionalt.png";
 import fireSpr from "./Art/fire.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
+
 
 export enum Layers
 {
@@ -110,7 +110,8 @@ export class MainScene extends Scene
         this.addSystem(new RocketLoaderSystem());
         this.addSystem(new OffScreenPassenger());
         // TODO before enabling, fix the mouse stuff
-        // this.addGlobalSystem(new ScreenShaker(EARTH_X, EARTH_Y));
+        // this.addGlobalSystem(new ScreenShaker());
+        this.addGlobalSystem(new ScreenShaker(EARTH_X, EARTH_Y));
         const collSystem = this.addGlobalSystem(new DiscreteRbodyCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
@@ -176,4 +177,3 @@ export class LD50 extends Game
         });
     }
 }
-
