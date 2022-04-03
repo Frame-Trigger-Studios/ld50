@@ -1,0 +1,39 @@
+name: Build and push
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout lagom-engine
+      uses: actions/checkout@v3
+      with:
+        path: lagom-engine
+        repository: peterm94/lagom-engine
+    - name: Checkout this repo 
+      uses: actions/checkout@v3
+      with:
+        path: main
+    - name: Node build
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+        cache: 'npm'
+        cache-dependency-path: "**/package-lock.json"
+    - run: npm ci
+      working-directory: lagom-engine
+    - run: npm ci
+      working-directory: main
+    - run: npm run customBuild
+      working-directory: main
+    - run: zip -r build.zip build
+      working-directory: main
+    - uses: actions/upload-artifact@v3.0.0
+      with:
+        name: build.zip
+        path: main/build.zip

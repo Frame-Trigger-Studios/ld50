@@ -2,14 +2,16 @@ import {ApplyForce, DiscreteRbodyCollisionSystem, PhysicsEngine} from "./Systems
 import {
     AudioAtlas,
     CollisionMatrix,
-    ContinuousCollisionSystem,
-    DebugCollisionSystem, FrameTriggerSystem, Diagnostics,
+    DebugCollisionSystem,
+    Diagnostics,
+    FrameTriggerSystem,
     Game,
     Log,
     LogLevel,
-    Scene, ScreenShaker,
+    Scene,
     SimplePhysics,
-    SpriteSheet, TimerSystem
+    SpriteSheet,
+    TimerSystem
 } from "lagom-engine";
 import {RocketSelection, TypingSystem} from "./Game/RocketSelection";
 import {GameManager, GameManagerSystem} from "./Global/GameManager";
@@ -28,7 +30,8 @@ import grooveMusic from "./Sound/music.mp3";
 import {ClickListener, ScreenCard} from "./Global/SplashScreens";
 import youLoseScreen from "./Art/placeholder/game-over.png";
 import startScreen from "./Art/placeholder/start.png";
-import mute from "./Art/placeholder/mute.png";
+import mute from "./Art/mute.png";
+import bigExplosion2 from "./Art/bigexplosion2.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
 
@@ -79,6 +82,7 @@ export class MainScene extends Scene
     startGame()
     {
         // Systems first
+        this.addGlobalSystem(new FrameTriggerSystem());
         this.addSystem(new PhysicsEngine());
         this.addSystem(new SimplePhysics());
         this.addSystem(new GameManagerSystem());
@@ -133,6 +137,7 @@ export class LD50 extends Game
         this.addResource("loseScreen", new SpriteSheet(youLoseScreen, GAME_WIDTH, GAME_HEIGHT));
 
         this.addResource("earth", new SpriteSheet(earthSpr, 64, 64));
+        this.addResource("bigexplosion2", new SpriteSheet(bigExplosion2, 128, 128));
         this.addResource("asteroids", new SpriteSheet(asteroidsSpr, 16, 16));
         this.addResource("launchpad", new SpriteSheet(launchpadSpr, 18, 23));
         this.addResource("rockets", new SpriteSheet(rocketsSpr, 32, 32));

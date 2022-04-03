@@ -3,7 +3,6 @@ import * as ReactDOM from "react-dom";
 import './App.css';
 import {LagomGameComponent} from "lagom-engine";
 import {LD50} from "./LD50";
-import "./Fonts/retro_computer_personal_use.ttf";
 import './index.css';
 
 const game = new LD50();
