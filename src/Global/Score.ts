@@ -33,7 +33,7 @@ export class ScoreDisplay extends Entity {
         this.addComponent(new TextDisp(10, 8, score.getScoreText(), {
             fontSize: 10,
             fontFamily: "myPixelFont",
-            fill: 0xffffff,
+            fill: 0x6ceded,
         }));
     }
 }
