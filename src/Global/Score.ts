@@ -63,13 +63,13 @@ export class ScoreUpdater extends System<[Score, TextDisp]> {
                     text1.pixiObj.text = score.getScoreText();
                 }
 
-                // if (score.remaining <= 0) {
-                //     const game = this.getScene().getGame();
-                //     this.getScene().entities.forEach(x => x.destroy());
-                //     this.getScene().systems.forEach(x => x.destroy());
-                //     this.getScene().globalSystems.forEach(x => x.destroy());
-                //     game.setScene(new EndScreen(game));
-                // }
+                if (score.remaining <= 0) {
+                    const game = this.getScene().getGame();
+                    this.getScene().entities.forEach(x => x.destroy());
+                    this.getScene().systems.forEach(x => x.destroy());
+                    this.getScene().globalSystems.forEach(x => x.destroy());
+                    game.setScene(new EndScreen(game));
+                }
             });
         }
 }
