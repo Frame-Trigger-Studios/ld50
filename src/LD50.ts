@@ -1,14 +1,15 @@
 import {ApplyForce, PhysicsEngine} from "./Systems/Physics";
 import {
+    AudioAtlas,
     CollisionMatrix,
     ContinuousCollisionSystem,
-    DebugCollisionSystem,
+    DebugCollisionSystem, FrameTriggerSystem,
     Game,
     Log,
     LogLevel,
-    Scene,
+    Scene, ScreenShaker,
     SimplePhysics,
-    SpriteSheet
+    SpriteSheet, TimerSystem
 } from "lagom-engine";
 import {RocketSelection, TypingSystem} from "./Game/RocketSelection";
 import {GameManager, GameManagerSystem} from "./Global/GameManager";
@@ -23,6 +24,13 @@ import {OffScreenPassenger, ScoreDisplay, ScoreUpdater} from "./Global/Score";
 import {DestroySystem} from "./Systems/DestroyMeNextFrame";
 import {RocketLoaderSystem} from "./Game/RocketLoader";
 import {Earth} from "./Game/Earth";
+import grooveMusic from "./Sound/music.mp3";
+import {ClickListener, ScreenCard} from "./Global/SplashScreens";
+import youLoseScreen from "./Art/placeholder/game-over.png";
+import startScreen from "./Art/placeholder/start.png";
+import mute from "./Art/placeholder/mute.png";
+import {SoundManager} from "./Global/SoundManager";
+
 
 export enum Layers
 {
@@ -53,12 +61,23 @@ matrix.addCollision(Layers.Explosion, Layers.Ship);
 matrix.addCollision(Layers.Explosion, Layers.Asteroid);
 
 
-class MainScene extends Scene
+export class MainScene extends Scene
 {
+    static firstLoad = true;
+
     onAdded()
     {
         super.onAdded();
 
+        this.addGUIEntity(new ScreenCard(this.game.getResource("titleScreen").textureSliceFromSheet(), 0));
+        this.addGlobalSystem(new FrameTriggerSystem());
+        this.addGlobalSystem(new TimerSystem());
+        this.addGlobalSystem(new ClickListener());
+        this.addGUIEntity(new SoundManager());
+    }
+
+    startGame()
+    {
         // Systems first
         this.addSystem(new PhysicsEngine());
         this.addSystem(new SimplePhysics());
@@ -92,6 +111,9 @@ class MainScene extends Scene
 export class LD50 extends Game
 {
     static debug = true;
+    static muted = false;
+    static musicPlaying = false;
+    static audioAtlas: AudioAtlas = new AudioAtlas();
 
     constructor()
     {
@@ -100,6 +122,14 @@ export class LD50 extends Game
         // TODO enable this before deploy
         // Log.logLevel = LogLevel.ERROR;
         Log.logLevel = LogLevel.ALL;
+
+        const music = LD50.audioAtlas.load("music", grooveMusic);
+        music.loop(true);
+        music.volume(25);
+
+        this.addResource("mute", new SpriteSheet(mute, 16, 16));
+        this.addResource("titleScreen", new SpriteSheet(startScreen, GAME_WIDTH, GAME_HEIGHT));
+        this.addResource("loseScreen", new SpriteSheet(youLoseScreen, GAME_WIDTH, GAME_HEIGHT));
 
         this.addResource("earth", new SpriteSheet(earthSpr, 64, 64));
         this.addResource("asteroids", new SpriteSheet(asteroidsSpr, 16, 16));
