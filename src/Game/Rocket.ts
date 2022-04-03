@@ -120,7 +120,23 @@ export class Rocket extends Entity
 
     explode()
     {
-        const texture = this.rocketType > 2 ? "bigexplosion2" : "bigexplosion3";
+        let texture = "smallexplosion";
+        switch (this.rocketType)
+        {
+            case RocketType.STARSHIP:
+                texture = "bigexplosion3";
+                break;
+            case RocketType.PASSENGER:
+                texture = "smallexplosion2";
+                break;
+            case RocketType.ICBM:
+                texture = "bigexplosion2";
+                break;
+            case RocketType.MISSILE:
+                texture = "smallexplosion";
+                break;
+        }
+
         const here = this.transform.getGlobalPosition();
         const explosionSpr = this.getScene().addEntity(new Entity("explosionspr", here.x, here.y, Layers.Explosion));
         explosionSpr.addComponent(new AnimatedSpriteController(0, [
@@ -151,7 +167,8 @@ export class Rocket extends Entity
             if (other.layer === Layers.Asteroid)
             {
                 let force = 1;
-                switch (this.rocketType) {
+                switch (this.rocketType)
+                {
                     case RocketType.ICBM:
                         force = 4;
                         break;
