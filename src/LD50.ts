@@ -53,7 +53,7 @@ export const GAME_HEIGHT = 240;
 export const EARTH_X = GAME_WIDTH / 2;
 export const EARTH_Y = GAME_HEIGHT / 2;
 
-export const SECONDS_TO_MAX_ASTEROID_SPAWN_RATE = 180;
+export const SECONDS_TO_MAX_ASTEROID_SPAWN_RATE = 240;
 export const ASTEROID_SPEED_MULTIPLIER = 1;
 export const EARTH_GRAVITY_MULTIPLIER = 1;
 
@@ -125,7 +125,7 @@ export class MainScene extends Scene
 
 export class LD50 extends Game
 {
-    static debug = true;
+    static debug = false;
     static muted = LD50.debug;
     static musicPlaying = false;
     static audioAtlas: AudioAtlas = new AudioAtlas();

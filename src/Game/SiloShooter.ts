@@ -1,5 +1,5 @@
 import {SiloAmmo, SiloThing} from "./SiloAimer";
-import {Button, Entity, Game, MathUtil, System, Timer} from "lagom-engine";
+import {Button, Entity, Game, System, Timer} from "lagom-engine";
 import {Rocket} from "./Rocket";
 import {CompletedRocket} from "./RocketLoader";
 import {TypedLetters, TypingSystem} from "./RocketSelection";
@@ -32,11 +32,25 @@ export class SiloShooter extends System<[SiloThing, SiloAmmo]>
 
                         let builders = this.getScene().entities.filter(entity => entity.getComponent(TypedLetters))
                                            .filter(entity => !entity.getComponent(Timer));
-                        if (completedRocket.rocketType != RocketType.MISSILE)
-                        {
+
+                        let cooldown = 0;
+                        switch (completedRocket.rocketType) {
+                            case RocketType.ICBM:
+                                cooldown = 10;
+                                break;
+                            case RocketType.PASSENGER:
+                                cooldown = 5;
+                                break;
+                            case RocketType.STARSHIP:
+                                cooldown = 15;
+                                break;
+                        }
+
+
+                        if (cooldown > 0) {
                             builders = builders.filter(entity => entity != rocketBuilder);
 
-                            rocketBuilder.addComponent(new Timer(SHOOT_COOLDOWN, rocketBuilder, false))
+                            rocketBuilder.addComponent(new Timer(cooldown * 1000, rocketBuilder, false))
                                          .onTrigger.register(((caller, data) => {
                                 TypingSystem.changeTypingPaneAlpha([rocketBuilder], 1);
                                 caller.destroy();

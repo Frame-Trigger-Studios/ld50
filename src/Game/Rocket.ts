@@ -7,7 +7,6 @@ import {
     Entity,
     Game,
     MathUtil,
-    RenderCircle,
     Rigidbody,
     SimplePhysicsBody,
     Sprite,
@@ -21,9 +20,9 @@ import {Asteroid} from "./Asteroid";
 import {Score} from "../Global/Score";
 
 const SMALL_MISSILE_RADIUS = 20;
-const BIG_MISSILE_RADIUS = 50;
+const BIG_MISSILE_RADIUS = 75;
 const SMALL_PASSENGER_COUNT = 100;
-const BIG_PASSENGER_COUNT = 400;
+const BIG_PASSENGER_COUNT = 500;
 
 export class PassengerShip extends Component
 {

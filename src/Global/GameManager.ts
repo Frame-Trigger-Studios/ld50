@@ -1,4 +1,4 @@
-import {Component, Entity, LagomType, MathUtil, Scene, System} from "lagom-engine";
+import {Component, Entity, LagomType, Log, MathUtil, Scene, System} from "lagom-engine";
 import {
     GAME_HEIGHT,
     GAME_WIDTH,
@@ -40,10 +40,11 @@ export class GameManagerSystem extends System<[GameData]> {
             gameData.msUntilNextAsteroid -= delta;
             if (gameData.msUntilNextAsteroid <= 0) {
                 this.spawnAsteroid(this.getScene());
-                let nextSpawnMs = 100;
-                if (gameData.elapsedTime < 180_000) {
-                    nextSpawnMs = MathUtil.lerp(1500, 100, gameData.elapsedTime / (SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000));
+                let nextSpawnMs = 200;
+                if (gameData.elapsedTime < SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000) {
+                    nextSpawnMs = MathUtil.lerp(1500, 200, gameData.elapsedTime / (SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000));
                 }
+                Log.debug(`Asteroid spawn rate: ${nextSpawnMs}`);
                 gameData.msUntilNextAsteroid = nextSpawnMs;
             }
         });
