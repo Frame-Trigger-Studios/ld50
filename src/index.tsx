@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import './App.css';
 import {LagomGameComponent} from "lagom-engine";
 import {LD50} from "./LD50";
-import "./fonts/retro_computer_personal_use.ttf"
+import "./Fonts/retro_computer_personal_use.ttf";
 import './index.css';
 
 const game = new LD50();
@@ -22,4 +22,4 @@ game.load().then(() => {
     ReactDOM.render(
         <App/>,
         document.getElementById("root"));
-})
+});

@@ -1,4 +1,4 @@
-import {ApplyForce, Earth, PhysicsEngine} from "./Physics";
+import {ApplyForce, PhysicsEngine} from "./Systems/Physics";
 import {
     CollisionMatrix,
     ContinuousCollisionSystem,
@@ -10,17 +10,19 @@ import {
     SimplePhysics,
     SpriteSheet
 } from "lagom-engine";
-import {RocketLoaderSystem, RocketSelection, TypingSystem} from "./typing/Selection";
-import {GameManager, GameManagerSystem} from "./Code/GameManager";
-import {OffScreenDestroyer} from "./Code/OffScreenDestroyer";
-import {SiloAimer} from "./SiloAimer";
+import {RocketSelection, TypingSystem} from "./Game/RocketSelection";
+import {GameManager, GameManagerSystem} from "./Global/GameManager";
+import {OffScreenDestroyer} from "./Systems/OffScreenDestroyer";
+import {SiloAimer} from "./Game/SiloAimer";
 import earthSpr from "./Art/earth.png";
 import asteroidsSpr from "./Art/asteroids.png";
 import launchpadSpr from "./Art/launchpad.png";
 import rocketsSpr from "./Art/rockets.png";
-import {SiloShooter} from "./SiloShooter";
-import {OffScreenPassenger, ScoreDisplay} from "./Code/Score";
-import {DestroySystem} from "./DestroyMeNextFrame";
+import {SiloShooter} from "./Game/SiloShooter";
+import {OffScreenPassenger, ScoreDisplay} from "./Global/Score";
+import {DestroySystem} from "./Systems/DestroyMeNextFrame";
+import {RocketLoaderSystem} from "./Game/RocketLoader";
+import {Earth} from "./Game/Earth";
 
 export enum Layers
 {

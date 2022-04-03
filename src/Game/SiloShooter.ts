@@ -1,8 +1,7 @@
 import {SiloAmmo, SiloThing} from "./SiloAimer";
 import {Button, Entity, Game, System} from "lagom-engine";
-import {Missile, Rocket} from "./Rocket";
-import {CompletedRocket} from "./typing/Selection";
-import {RocketType} from "./LD50";
+import {Rocket} from "./Rocket";
+import {CompletedRocket} from "./RocketLoader";
 
 export class SiloShooter extends System<[SiloThing , SiloAmmo]>
 {

@@ -1,6 +1,7 @@
 import {Component, Entity, GlobalSystem, Key, RenderRect, Sprite, System, TextDisp} from "lagom-engine";
-import {SiloAmmo} from "../SiloAimer";
+import {SiloAmmo} from "./SiloAimer";
 import {RocketType} from "../LD50";
+import {CompletedRocket} from "./RocketLoader";
 
 
 
@@ -42,13 +43,6 @@ export class TypePane extends Entity
         this.addChild(new TypedLettersTextDisp(5, 5, 0, ""));
         this.addComponent(new TypedLetters(this.text, ""));
         this.addComponent(new RocketTypeModifier(this.rocketType));
-    }
-}
-
-export class CompletedRocket extends Component
-{
-    constructor(public rocketType: RocketType) {
-        super();
     }
 }
 
@@ -218,22 +212,6 @@ export class TypingSystem extends GlobalSystem
     }
 }
 
-export class RocketLoaderSystem extends System<[CompletedRocket]>
-{
-    types = () => [CompletedRocket];
-
-    update(delta: number): void
-    {
-        this.runOnEntities((entity: Entity, completedRocket: CompletedRocket) => {
-            const silo = this.getScene().getEntityWithName("Silo");
-            const siloAmmo = silo?.getComponent<SiloAmmo>(SiloAmmo);
-            if (siloAmmo && !siloAmmo.hasRocket)
-            {
-                siloAmmo.setRocket(completedRocket.rocketType);
-            }
-        });
-    }
-}
 export class LaunchpadSprite extends Sprite {
     constructor(texture: never /* PIXI.Texture */)
     {

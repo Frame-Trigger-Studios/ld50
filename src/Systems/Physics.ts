@@ -1,0 +1,44 @@
+import {Component, MathUtil, SimplePhysicsBody, System, Vector} from "lagom-engine";
+import {EARTH_X, EARTH_Y} from "../LD50";
+
+export class Force extends Component {
+    constructor(readonly velocity: Vector) {
+        super();
+    }
+}
+
+export class PhysicsMe extends Component {
+}
+
+export class ApplyForce extends System<[Force, SimplePhysicsBody]> {
+    types = () => [Force, SimplePhysicsBody];
+
+    update(delta: number): void {
+        this.runOnEntities((entity, force, body) => {
+            body.move(force.velocity.x, force.velocity.y);
+            force.destroy();
+        });
+    }
+}
+
+export class PhysicsEngine extends System<[PhysicsMe, SimplePhysicsBody]> {
+    types = () => [PhysicsMe, SimplePhysicsBody];
+
+    update(delta: number): void {
+        this.runOnEntities((entity, physicsProps, body) => {
+            // ph.move(100, 0);
+
+            // Apply earth pull
+            const dist = MathUtil.pointDistance(entity.transform.x, entity.transform.y, EARTH_X, EARTH_Y);
+            const dir = MathUtil.pointDirection(entity.transform.x, entity.transform.y, EARTH_X, EARTH_Y);
+
+
+            const pullForce = MathUtil.lengthDirXY(1 / dist / 300, -dir);
+            const speed = 0.005;
+
+            const movement = pullForce.multiply(delta * speed);
+            body.move(movement.x, movement.y);
+            // body.move(pullForce.x * delta * speed, pullForce.y * delta * speed);
+        });
+    }
+}

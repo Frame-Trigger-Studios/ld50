@@ -1,6 +1,6 @@
 import {Component, Entity, LagomType, MathUtil, Scene, System} from "lagom-engine";
 import {GAME_HEIGHT, GAME_WIDTH, EARTH_X, EARTH_Y} from "../LD50";
-import {Asteroid} from "../Physics";
+import {Asteroid} from "../Game/Asteroid";
 
 export class GameManager extends Entity {
     onAdded() {

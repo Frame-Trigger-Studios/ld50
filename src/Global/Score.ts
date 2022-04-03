@@ -1,7 +1,7 @@
 import {Component, Entity, System, TextDisp} from "lagom-engine";
 import {GAME_HEIGHT, GAME_WIDTH} from "../LD50";
-import {OffScreenDestroyable} from "./OffScreenDestroyer";
-import {PassengerShip} from "../Rocket";
+import {OffScreenDestroyable} from "../Systems/OffScreenDestroyer";
+import {PassengerShip} from "../Game/Rocket";
 
 
 class Score extends Component {

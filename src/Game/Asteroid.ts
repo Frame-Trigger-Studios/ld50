@@ -1,105 +1,17 @@
 import {
     BodyType,
-    CircleCollider,
-    CollisionSystem,
-    Component,
+    CircleCollider, CollisionSystem,
     Entity,
     MathUtil,
-    RenderCircle,
     Rigidbody,
     SimplePhysicsBody,
     Sprite,
-    System,
     Util,
     Vector
 } from "lagom-engine";
-import {Silo} from "./SiloAimer";
-import {EARTH_X, EARTH_Y, Layers} from "./LD50";
-import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
-
-export class Force extends Component
-{
-    constructor(readonly velocity: Vector)
-    {
-        super();
-    }
-}
-
-export class PhysicsMe extends Component
-{
-}
-
-export class ApplyForce extends System<[Force, SimplePhysicsBody]>
-{
-    types = () => [Force, SimplePhysicsBody];
-
-    update(delta: number): void
-    {
-        this.runOnEntities((entity, force, body) => {
-            body.move(force.velocity.x, force.velocity.y);
-            force.destroy();
-        });
-    }
-}
-
-export class PhysicsEngine extends System<[PhysicsMe, SimplePhysicsBody]>
-{
-    types = () => [PhysicsMe, SimplePhysicsBody];
-
-    update(delta: number): void
-    {
-        this.runOnEntities((entity, physicsProps, body) => {
-            // ph.move(100, 0);
-
-            // Apply earth pull
-            const dist = MathUtil.pointDistance(entity.transform.x, entity.transform.y, EARTH_X, EARTH_Y);
-            const dir = MathUtil.pointDirection(entity.transform.x, entity.transform.y, EARTH_X, EARTH_Y);
-
-
-            const pullForce = MathUtil.lengthDirXY(1 / dist / 300, -dir);
-            const speed = 0.005;
-
-            const movement = pullForce.multiply(delta * speed);
-            body.move(movement.x, movement.y);
-            // body.move(pullForce.x * delta * speed, pullForce.y * delta * speed);
-        });
-    }
-}
-
-export class Earth extends Entity
-{
-    private radius = 20;
-
-    onAdded()
-    {
-        super.onAdded();
-
-        this.addComponent(new RenderCircle(0, 0, this.radius, 0x0000AA, 0x0000FF));
-        this.addComponent(new Sprite(this.getScene().game.getResource("earth").texture(0, 0), {
-            xAnchor: 0.5,
-            yAnchor: 0.5
-        }));
-        this.addChild(new Silo(0, 0));
-
-        this.addComponent(new Rigidbody(BodyType.Discrete));
-
-        const coll = this.addComponent(
-            new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
-                layer: Layers.Earth,
-                radius: this.radius,
-                xOff: 0,
-                yOff: 0
-            }));
-
-        coll.onTriggerEnter.register((caller, {other, result}) => {
-            if (other.layer == Layers.Asteroid)
-            {
-                // TODO lose health / lose the game
-                other.getEntity().destroy();
-            }
-        });
-    }
-}
+import {OffScreenDestroyable} from "../Systems/OffScreenDestroyer";
+import {Layers} from "../LD50";
+import {Force, PhysicsMe} from "../Systems/Physics";
 
 export class Asteroid extends Entity
 {
@@ -120,9 +32,9 @@ export class Asteroid extends Entity
         this.addComponent(new PhysicsMe());
         this.addComponent(new Force(this.initialMovement));
         this.addComponent(new SimplePhysicsBody({
-                                                    angDrag: 0.0001,
-                                                    linDrag: this.linDrag
-                                                })).angVel = (Math.random() * 0.04 * Util.choose(1, -1));
+            angDrag: 0.0001,
+            linDrag: this.linDrag
+        })).angVel = (Math.random() * 0.04 * Util.choose(1, -1));
         this.addComponent(new Rigidbody(BodyType.Discrete));
         const coll = this.addComponent(
             new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
@@ -143,7 +55,7 @@ export class Asteroid extends Entity
 
             // Vector perpendicular to (x, y) is (-y, x)
             const tangentVector = new Vector(them.transform.y - me.transform.y,
-                                             -(them.transform.x - me.transform.x));
+                -(them.transform.x - me.transform.x));
             tangentVector.normalize();
 
             const relativeVelocity = new Vector(otherProps.xVel - myProps.xVel, otherProps.yVel - myProps.yVel);
@@ -177,13 +89,14 @@ export class Asteroid extends Entity
         }
 
         const direction = MathUtil.pointDirection(-this.transform.getGlobalPosition().x,
-                                                  this.transform.getGlobalPosition().y,
-                                                  -forceSource.transform.getGlobalPosition().x,
-                                                  forceSource.transform.getGlobalPosition().y);
+            this.transform.getGlobalPosition().y,
+            -forceSource.transform.getGlobalPosition().x,
+            forceSource.transform.getGlobalPosition().y);
         const velocity = MathUtil.lengthDirXY(0.1, direction);
         this.addComponent(new Force(velocity));
     };
 }
+
 
 // TODO move to core
 function dotProduct(vector1: Vector, vector2: Vector): number

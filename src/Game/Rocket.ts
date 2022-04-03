@@ -10,10 +10,11 @@ import {
     SimplePhysicsBody,
     Sprite
 } from "lagom-engine";
-import {Asteroid, Force} from "./Physics";
-import {EARTH_X, EARTH_Y, Layers, RocketType} from "./LD50";
-import {OffScreenDestroyable} from "./Code/OffScreenDestroyer";
-import {DestroyMeNextFrame} from "./DestroyMeNextFrame";
+import {Force} from "../Systems/Physics";
+import {EARTH_X, EARTH_Y, Layers, RocketType} from "../LD50";
+import {OffScreenDestroyable} from "../Systems/OffScreenDestroyer";
+import {DestroyMeNextFrame} from "../Systems/DestroyMeNextFrame";
+import {Asteroid} from "./Asteroid";
 
 const SMALL_MISSILE_RADIUS = 30;
 const BIG_MISSILE_RADIUS = 50;
