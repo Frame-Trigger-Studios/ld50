@@ -35,7 +35,14 @@ export class SiloShooter extends System<[SiloThing , SiloAmmo]>
 
                             rocketBuilder.addComponent(new Timer(SHOOT_COOLDOWN, rocketBuilder, false))
                                 .onTrigger.register(((caller, data) => {
-                                TypingSystem.changeTypingPaneAlpha([rocketBuilder], 1);
+
+                                const buidlingInProgress =
+                                    this.getScene().entities.map(entity => entity.getComponent<TypedLetters>(TypedLetters))
+                                    .filter(component => component != null)
+                                    .some(typedLetters => typedLetters && typedLetters.typed.length > 0);
+                                if (!buidlingInProgress) {
+                                    TypingSystem.changeTypingPaneAlpha([rocketBuilder], 1);
+                                }
                                 caller.destroy();
                             }));
                         }
