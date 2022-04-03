@@ -3,7 +3,7 @@ import {
     AudioAtlas,
     CollisionMatrix,
     ContinuousCollisionSystem,
-    DebugCollisionSystem, FrameTriggerSystem,
+    DebugCollisionSystem, FrameTriggerSystem, Diagnostics,
     Game,
     Log,
     LogLevel,
@@ -95,6 +95,7 @@ export class MainScene extends Scene
 
         if (LD50.debug)
         {
+            this.addGUIEntity(new Diagnostics("white", 8, true)).transform.x = 150;
             this.addGlobalSystem(new DebugCollisionSystem(collSystem));
         }
 
