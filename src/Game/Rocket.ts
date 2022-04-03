@@ -1,4 +1,5 @@
 import {
+    AnimatedSpriteController,
     BodyType,
     CircleCollider,
     CollisionSystem,
@@ -8,7 +9,8 @@ import {
     MathUtil,
     Rigidbody,
     SimplePhysicsBody,
-    Sprite
+    Sprite,
+    Util
 } from "lagom-engine";
 import {Force} from "../Systems/Physics";
 import {EARTH_X, EARTH_Y, Layers, RocketType} from "../LD50";
@@ -61,19 +63,22 @@ export class Rocket extends Entity
         {
             this.addComponent(new Missile(SMALL_MISSILE_RADIUS));
             this.addComponent(new OffScreenDestroyable());
-        } else if (this.rocketType == RocketType.ICBM)
+        }
+        else if (this.rocketType == RocketType.ICBM)
         {
             speedMulti = 0.06;
             colliderSize = 8;
             this.addComponent(new Missile(BIG_MISSILE_RADIUS));
             this.addComponent(new OffScreenDestroyable());
-        } else if (this.rocketType == RocketType.PASSENGER)
+        }
+        else if (this.rocketType == RocketType.PASSENGER)
         {
             speedMulti = 0.04;
             this.addComponent(new Missile(SMALL_PASSENGER_EXPLOSION_RADIUS));
             this.addComponent(new PassengerShip(SMALL_PASSENGER_COUNT));
             this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(SMALL_PASSENGER_COUNT);
-        } else if (this.rocketType == RocketType.STARSHIP)
+        }
+        else if (this.rocketType == RocketType.STARSHIP)
         {
             speedMulti = 0.02;
             colliderSize = 8;
@@ -84,7 +89,7 @@ export class Rocket extends Entity
 
         const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());
         const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y,
-                                                  mousePos.x, mousePos.y);
+            mousePos.x, mousePos.y);
         const velocity = MathUtil.lengthDirXY(speedMulti, -direction);
 
         // this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0xAA00FF));
@@ -94,10 +99,10 @@ export class Rocket extends Entity
         const texture = this.getScene().game.getResource("rockets").texture(this.rocketType, 0);
         this.addComponent(
             new Sprite(texture, {
-            xAnchor: 0.5,
-            yAnchor: 0.75,
-            rotation: -direction + MathUtil.degToRad(90)
-        }));
+                xAnchor: 0.5,
+                yAnchor: 0.75,
+                rotation: -direction + MathUtil.degToRad(90)
+            }));
 
         const coll = this.addComponent(
             new CircleCollider(this.getScene().getGlobalSystem(CollisionSystem) as CollisionSystem, {
@@ -117,6 +122,19 @@ export class Rocket extends Entity
 
     explode()
     {
+        const here = this.transform.getGlobalPosition();
+        const explosionSpr = this.getScene().addEntity(new Entity("explosionspr", here.x, here.y, Layers.Explosion));
+        explosionSpr.addComponent(new AnimatedSpriteController(0, [
+            {
+                id: 0,
+                textures: this.getScene().game.getResource("bigexplosion2").textureSliceFromSheet(),
+                config: {
+                    xAnchor: 0.5, yAnchor: 0.5,
+                    rotation: MathUtil.degToRad(Util.choose(0, 90, 180, 270)),
+                    animationEndEvent: () => explosionSpr.destroy(), animationSpeed: 60
+                }
+            }]));
+
         const missile = this.getComponent<Missile>(Missile);
         if (!missile)
         {
