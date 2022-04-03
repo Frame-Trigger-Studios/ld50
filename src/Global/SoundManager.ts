@@ -17,7 +17,7 @@ class MuteListener extends System<[AnimatedSpriteController, MuteComp]>
             {
                 const pos = e.scene.game.renderer.plugins.interaction.mouse.global;
 
-                if (pos.x > 0 && pos.x < 16 && pos.y > 0 && pos.y < 16)
+                if (pos.x >= GAME_WIDTH - 24 && pos.x <= GAME_WIDTH - 8 && pos.y >= 8 && pos.y <= 24)
                 {
                     (e.scene.getEntityWithName("audio") as SoundManager).toggleMute();
                     spr.setAnimation(Number(LD50.muted));
@@ -31,7 +31,7 @@ export class SoundManager extends Entity
 {
     constructor()
     {
-        super("audio", GAME_WIDTH - 16, 0, Layers.GUI);
+        super("audio", GAME_WIDTH - 16 - 8, 8, Layers.GUI);
 
         this.startMusic();
     }
