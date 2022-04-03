@@ -44,7 +44,6 @@ export class GameManagerSystem extends System<[GameData]> {
                 if (gameData.elapsedTime < SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000) {
                     nextSpawnMs = MathUtil.lerp(1500, 200, gameData.elapsedTime / (SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000));
                 }
-                Log.debug(`Asteroid spawn rate: ${nextSpawnMs}`);
                 gameData.msUntilNextAsteroid = nextSpawnMs;
             }
         });

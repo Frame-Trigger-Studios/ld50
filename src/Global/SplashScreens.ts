@@ -95,7 +95,7 @@ export class ClickListener extends GlobalSystem
 
 export class EndScreen extends Scene
 {
-    constructor(game: Game, readonly score: number)
+    constructor(game: Game, readonly score: number, readonly time: number)
     {
         super(game);
     }
@@ -104,7 +104,7 @@ export class EndScreen extends Scene
     {
         super.onAdded();
         this.addGUIEntity(new ScreenCard(this.game.getResource("loseScreen").textureSliceFromSheet(), 1))
-            .addComponent(new TextDisp(70, 30, `Humans "saved": ${this.score}`,
+            .addComponent(new TextDisp(70, 30, `Humans "saved": ${this.score}\nElapsed time: ${Math.floor(this.time/1000)} seconds`,
                 {fill: 0xffffff, fontSize: 10}));
 
         this.addGlobalSystem(new FrameTriggerSystem());
