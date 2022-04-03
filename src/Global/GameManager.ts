@@ -35,7 +35,12 @@ export class GameManagerSystem extends System<[GameData]> {
             gameData.msUntilNextAsteroid -= delta;
             if (gameData.msUntilNextAsteroid <= 0) {
                 this.spawnAsteroid(this.getScene());
-                gameData.msUntilNextAsteroid = asteroidSpawnRate;
+                let nextSpawnMs = 100;
+                if (gameData.elapsedTime < 180_000) {
+                    nextSpawnMs = MathUtil.lerp(1500, 100, gameData.elapsedTime / 180_000);
+                }
+                console.log(nextSpawnMs);
+                gameData.msUntilNextAsteroid = nextSpawnMs;
             }
         });
     }
@@ -64,10 +69,9 @@ export class GameManagerSystem extends System<[GameData]> {
         // 1 - 3
         const radius = 2 + Math.floor(Math.random() * 4);
         const linearDrag = Math.random() * 0.00001;
-        // const speed = Math.random() * 0.01;
-        const speed = 0.005;
+        const speed = randomRange(0.01, 0.05);
+        const variance = randomRange(-Math.PI/4, Math.PI/4);
 
-        const variance = ((Math.random() * Math.PI/2) - Math.PI/4);
         const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y) + variance;
         const dir = MathUtil.lengthDirXY(speed, -angleToEarth);
         const asteroid = new Asteroid(x, y, radius, dir, linearDrag);
@@ -75,3 +79,8 @@ export class GameManagerSystem extends System<[GameData]> {
         scene.addEntity(asteroid);
     }
 }
+
+const randomRange = (min: number, max: number): number =>
+{
+    return Math.random() * (max - min) + min;
+};

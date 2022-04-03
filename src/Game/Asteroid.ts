@@ -84,7 +84,7 @@ export class Asteroid extends Entity
         });
     }
 
-    pushFromCenter = (forceSource: Entity) => {
+    pushFromCenter = (forceSource: Entity, forceScalar = 1) => {
         const myProps = this.getComponent<SimplePhysicsBody>(SimplePhysicsBody);
         if (myProps == null)
         {
@@ -95,7 +95,7 @@ export class Asteroid extends Entity
             this.transform.getGlobalPosition().y,
             -forceSource.transform.getGlobalPosition().x,
             forceSource.transform.getGlobalPosition().y);
-        const velocity = MathUtil.lengthDirXY(0.1, direction);
+        const velocity = MathUtil.lengthDirXY(0.1 * forceScalar, direction);
         this.addComponent(new Force(velocity));
     };
 }

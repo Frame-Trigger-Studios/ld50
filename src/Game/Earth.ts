@@ -10,6 +10,7 @@ import {
 import {Silo} from "./SiloAimer";
 import {Layers} from "../LD50";
 import {Score} from "../Global/Score";
+import {Asteroid} from "./Asteroid";
 
 export class Earth extends Entity
 {
@@ -40,7 +41,9 @@ export class Earth extends Entity
             if (other.layer == Layers.Asteroid)
             {
                 // TODO variable based on size or speed??
-                const amountToLose = MathUtil.randomRange(1_500_000_000, 2_000_000_000);
+                let amountToLose = 500_000_000 * (other.getEntity() as Asteroid).radius;
+                amountToLose += MathUtil.randomRange(-50_000_000, 50_000_000);
+                amountToLose -= 500_000_000;
                 this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(amountToLose);
                 other.getEntity().destroy();
             }

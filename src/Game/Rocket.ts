@@ -19,12 +19,10 @@ import {DestroyMeNextFrame} from "../Systems/DestroyMeNextFrame";
 import {Asteroid} from "./Asteroid";
 import {Score} from "../Global/Score";
 
-const SMALL_MISSILE_RADIUS = 30;
+const SMALL_MISSILE_RADIUS = 20;
 const BIG_MISSILE_RADIUS = 50;
 const SMALL_PASSENGER_COUNT = 100;
-const SMALL_PASSENGER_EXPLOSION_RADIUS = 10;
 const BIG_PASSENGER_COUNT = 400;
-const BIG_PASSENGER_EXPLOSION_RADIUS = 30;
 
 export class PassengerShip extends Component
 {
@@ -74,7 +72,7 @@ export class Rocket extends Entity
         else if (this.rocketType == RocketType.PASSENGER)
         {
             speedMulti = 0.04;
-            this.addComponent(new Missile(SMALL_PASSENGER_EXPLOSION_RADIUS));
+            this.addComponent(new Missile(SMALL_MISSILE_RADIUS));
             this.addComponent(new PassengerShip(SMALL_PASSENGER_COUNT));
             this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(SMALL_PASSENGER_COUNT);
         }
@@ -82,7 +80,7 @@ export class Rocket extends Entity
         {
             speedMulti = 0.02;
             colliderSize = 8;
-            this.addComponent(new Missile(BIG_PASSENGER_EXPLOSION_RADIUS));
+            this.addComponent(new Missile(BIG_MISSILE_RADIUS));
             this.addComponent(new PassengerShip(BIG_PASSENGER_COUNT));
             this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(BIG_PASSENGER_COUNT);
         }
@@ -151,7 +149,16 @@ export class Rocket extends Entity
         explosion.onTriggerEnter.register((caller, {other, result}) => {
             if (other.layer === Layers.Asteroid)
             {
-                (other.getEntity() as Asteroid).pushFromCenter(this);
+                let force = 1;
+                switch (this.rocketType) {
+                    case RocketType.ICBM:
+                        force = 4;
+                        break;
+                    case RocketType.PASSENGER:
+                        force = 0.5;
+                        break;
+                }
+                (other.getEntity() as Asteroid).pushFromCenter(this, force);
             }
         });
 

@@ -80,7 +80,7 @@ export class PhysicsEngine extends System<[PhysicsMe, SimplePhysicsBody]>
 
 
             const pullForce = MathUtil.lengthDirXY(1 / dist / 300, -dir);
-            const speed = 0.005;
+            const speed = 0.01;
 
             const movement = pullForce.multiply(delta * speed);
             body.move(movement.x, movement.y);
