@@ -35,4 +35,5 @@ jobs:
       working-directory: main
     - uses: actions/upload-artifact@v3.0.0
       with:
+        name: build.zip
         path: main/build.zip
