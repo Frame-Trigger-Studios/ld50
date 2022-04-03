@@ -1,6 +1,8 @@
-import {Component, Entity, GlobalSystem, Key, Sprite, TextDisp} from "lagom-engine";
+import {Component, Entity, GlobalSystem, Key, Sprite, TextDisp, Timer} from "lagom-engine";
 import {RocketType} from "../LD50";
 import {CompletedRocket} from "./RocketLoader";
+
+const DISABLE_ALPHA = 0.3;
 
 class RocketTypeModifier extends Component {
     constructor(public type: RocketType) {
@@ -60,7 +62,7 @@ export class TypedLettersTextDisp extends Entity
     onAdded()
     {
         super.onAdded();
-        const text = this.addComponent(new TextDisp(0, 0, this.text, {fill: "red", fontSize: 16, fontFamily: "myPixelFont"}));
+        const text = this.addComponent(new TextDisp(0, 0, this.text, {fill: 0x6ceded, fontSize: 16, fontFamily: "myPixelFont"}));
         text.pixiObj.resolution = 100;
     }
 }
@@ -75,12 +77,12 @@ export class PreviewLettersTextDisp extends Entity
     onAdded()
     {
         super.onAdded();
-        const text = this.addComponent(new TextDisp(0, 0, this.text[0], {fill: "gray", fontSize: 16, fontFamily: "myPixelFont"}));
+        const text = this.addComponent(new TextDisp(0, 0, this.text[0], {fill: 0x6e5181, fontSize: 16, fontFamily: "myPixelFont"}));
         text.pixiObj.resolution = 100;
     }
 }
 
-class TypedLetters extends Component
+export class TypedLetters extends Component
 {
     constructor(public pattern: string, public typed: string)
     {
@@ -145,7 +147,9 @@ export class TypingSystem extends GlobalSystem
             matchingEntity = startedEntities[0];
         } else
         {
-            const matchingEntities = typingEntities.filter(entity => {
+            const matchingEntities = typingEntities
+                .filter(entity => !entity.getComponent(Timer) )
+                .filter(entity => {
                 const typedLetters = entity.getComponent<TypedLetters>(TypedLetters);
                 // console.log("typed: " + typedLetters?.pattern + " " + typedLetters?.typed + " " + letter);
                 return typedLetters?.pattern.startsWith(typedLetters.typed + letter);
@@ -178,24 +182,25 @@ export class TypingSystem extends GlobalSystem
                     return;
                 }
 
-                if (typedLetters.typed == typedLetters.pattern)
-                {
+                if (typedLetters.typed == typedLetters.pattern) {
                     this.resetTyped(typedLetters, text, expectedText);
                     const rocketType = matchingEntity.getComponent<RocketTypeModifier>(RocketTypeModifier);
                     if (rocketType) {
                         matchingEntity.addComponent(new CompletedRocket(rocketType.type));
                     }
-                } else
-                {
+                    TypingSystem.changeTypingPaneAlpha([typingEntity], DISABLE_ALPHA);
+                } else {
                     text.pixiObj.text = typedLetters.typed;
-                    if (expectedText)
-                    {
+                    if (expectedText) {
                         expectedText.pixiObj.text = typedLetters.pattern;
                     }
+
+                    TypingSystem.changeTypingPaneAlpha(typingEntities.filter(entity => entity != typingEntity), DISABLE_ALPHA);
                 }
-            } else
-            {
+            } else {
                 this.resetTyped(typedLetters, text, expectedText);
+                TypingSystem.changeTypingPaneAlpha(typingEntities.filter(entity => !entity.getComponent(Timer)), 1);
+
             }
         }
     }
@@ -213,6 +218,21 @@ export class TypingSystem extends GlobalSystem
         {
             expectedText.pixiObj.text = typedLetters.pattern[0];
         }
+    }
+
+    // Naughty naughty
+    public static changeTypingPaneAlpha(entities: Entity[], alpha: number) {
+        entities
+            .forEach(entity => {
+            const sprite = entity.getComponent<Sprite>(Sprite);
+            if (sprite) {
+                sprite.pixiObj.alpha = alpha;
+            }
+            const previewText = entity.findChildWithName("PreviewLettersTextDisp")?.getComponent<TextDisp>(TextDisp);
+            if (previewText) {
+                previewText.pixiObj.alpha = alpha;
+            }
+        });
     }
 }
 

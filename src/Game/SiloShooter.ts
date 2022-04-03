@@ -1,7 +1,11 @@
 import {SiloAmmo, SiloThing} from "./SiloAimer";
-import {Button, Entity, Game, System} from "lagom-engine";
+import {Button, Entity, Game, System, Timer} from "lagom-engine";
 import {Rocket} from "./Rocket";
 import {CompletedRocket} from "./RocketLoader";
+import {TypedLetters, TypingSystem} from "./RocketSelection";
+import {RocketType} from "../LD50";
+
+const SHOOT_COOLDOWN = 4 * 1000;
 
 export class SiloShooter extends System<[SiloThing , SiloAmmo]>
 {
@@ -12,16 +16,31 @@ export class SiloShooter extends System<[SiloThing , SiloAmmo]>
         this.runOnEntities((entity: Entity, silo: SiloThing, ammo: SiloAmmo) => {
 
             if (Game.mouse.isButtonReleased(Button.LEFT) && ammo.hasRocket) {
-                const rocket = this.getScene().addEntity(
+                this.getScene().addEntity(
                     new Rocket(entity.transform.getGlobalPosition().x, entity.transform.getGlobalPosition().y, ammo.rocket));
 
 
                 const storedRockets = this.getScene().entities.filter(entity => entity.getComponent(CompletedRocket) != null);
                 if (storedRockets.length > 0)
                 {
-                    const completedRocket = storedRockets[0].getComponent(CompletedRocket);
+                    const rocketBuilder = storedRockets[0];
+                    const completedRocket = rocketBuilder.getComponent<CompletedRocket>(CompletedRocket);
                     if (completedRocket) {
-                        storedRockets[0].removeComponent(completedRocket, true);
+                        rocketBuilder.removeComponent(completedRocket, true);
+
+                        let builders = this.getScene().entities.filter(entity => entity.getComponent(TypedLetters))
+                            .filter(entity => !entity.getComponent(Timer));
+                        if (completedRocket.rocketType != RocketType.MISSILE) {
+                            builders = builders.filter(entity => entity != rocketBuilder);
+
+                            rocketBuilder.addComponent(new Timer(SHOOT_COOLDOWN, rocketBuilder, false))
+                                .onTrigger.register(((caller, data) => {
+                                TypingSystem.changeTypingPaneAlpha([rocketBuilder], 1);
+                                caller.destroy();
+                            }));
+                        }
+
+                        TypingSystem.changeTypingPaneAlpha(builders, 1);
                     }
                 }
                 ammo.removeRocket();
