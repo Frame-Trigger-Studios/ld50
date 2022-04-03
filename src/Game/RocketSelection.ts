@@ -205,12 +205,13 @@ export class TypingSystem extends GlobalSystem
                         DISABLE_ALPHA);
                 }
             }
-            else
-            {
-                this.resetTyped(typedLetters, text, expectedText);
-                TypingSystem.changeTypingPaneAlpha(typingEntities.filter(entity => !entity.getComponent(Timer)), 1);
-
-            }
+            // Enable this block to reset the typing when an invalid letter is typed
+            // else
+            // {
+            //     this.resetTyped(typedLetters, text, expectedText);
+            //     TypingSystem.changeTypingPaneAlpha(typingEntities.filter(entity => !entity.getComponent(Timer)), 1);
+            //
+            // }
         }
     }
 
