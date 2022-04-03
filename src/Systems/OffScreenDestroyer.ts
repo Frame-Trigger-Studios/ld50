@@ -9,10 +9,10 @@ export class OffScreenDestroyer extends System<[OffScreenDestroyable]> {
 
     update(delta: number): void {
         this.runOnEntities(((entity) => {
-            if (entity.transform.x > GAME_WIDTH + 50
-                || entity.transform.x < -50
-                || entity.transform.y > GAME_HEIGHT + 50
-                || entity.transform.y < -50) {
+            if (entity.transform.x > GAME_WIDTH + 5
+                || entity.transform.x < -5
+                || entity.transform.y > GAME_HEIGHT + 5
+                || entity.transform.y < -5) {
 
                 entity.destroy();
             }

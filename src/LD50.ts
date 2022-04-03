@@ -19,7 +19,7 @@ import asteroidsSpr from "./Art/asteroids.png";
 import launchpadSpr from "./Art/launchpad.png";
 import rocketsSpr from "./Art/rockets.png";
 import {SiloShooter} from "./Game/SiloShooter";
-import {OffScreenPassenger, ScoreDisplay} from "./Global/Score";
+import {OffScreenPassenger, ScoreDisplay, ScoreUpdater} from "./Global/Score";
 import {DestroySystem} from "./Systems/DestroyMeNextFrame";
 import {RocketLoaderSystem} from "./Game/RocketLoader";
 import {Earth} from "./Game/Earth";
@@ -63,6 +63,7 @@ class MainScene extends Scene
         this.addSystem(new PhysicsEngine());
         this.addSystem(new SimplePhysics());
         this.addSystem(new GameManagerSystem());
+        this.addSystem(new ScoreUpdater());
         this.addSystem(new ApplyForce());
         this.addSystem(new OffScreenDestroyer());
         this.addSystem(new DestroySystem());
