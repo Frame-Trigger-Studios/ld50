@@ -33,7 +33,8 @@ export class Asteroid extends Entity
         this.addComponent(new Force(this.initialMovement));
         this.addComponent(new SimplePhysicsBody({
             angDrag: 0.0001,
-            linDrag: this.linDrag
+            linDrag: this.linDrag,
+            angCap: 0.1
         })).angVel = (Math.random() * 0.04 * Util.choose(1, -1));
         this.addComponent(new Rigidbody(BodyType.Discrete));
         const coll = this.addComponent(
@@ -78,6 +79,8 @@ export class Asteroid extends Entity
             {
                 pushUs(caller.getEntity(), other.getEntity());
             }
+            caller.getEntity().transform.x -= result.overlap * result.overlap_x;
+            caller.getEntity().transform.y -= result.overlap * result.overlap_y;
         });
     }
 

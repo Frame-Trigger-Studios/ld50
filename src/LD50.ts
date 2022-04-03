@@ -1,7 +1,6 @@
-import {ApplyForce, PhysicsEngine} from "./Systems/Physics";
+import {ApplyForce, DiscreteRbodyCollisionSystem, PhysicsEngine} from "./Systems/Physics";
 import {
     CollisionMatrix,
-    ContinuousCollisionSystem,
     DebugCollisionSystem,
     Game,
     Log,
@@ -69,7 +68,7 @@ class MainScene extends Scene
         this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
         this.addSystem(new OffScreenPassenger());
-        const collSystem = this.addGlobalSystem(new ContinuousCollisionSystem(matrix));
+        const collSystem = this.addGlobalSystem(new DiscreteRbodyCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
         this.addSystem(new SiloShooter());
