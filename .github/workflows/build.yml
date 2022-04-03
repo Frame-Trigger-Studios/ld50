@@ -10,12 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout lagom-engine
+      uses: actions/checkout@v3
+      with:
+        path: lagom-engine
+        repository: peterm94/lagom-engine
+    - name: Checkout this repo 
+      uses: actions/checkout@v3
+      with:
+        path: main
     - name: Node build
       uses: actions/setup-node@v3
       with:
         node-version: 16.x
         cache: 'npm'
     - run: npm ci
+      working-directory: lagom-engine
+    - run: npm ci
+      working-directory: main
     - run: npm run customBuild
+      working-directory: main
     - run: zip -r build.zip build
+      working-directory: main
