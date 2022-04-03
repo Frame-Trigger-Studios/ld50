@@ -30,7 +30,7 @@ import youLoseScreen from "./Art/placeholder/game-over.png";
 import startScreen from "./Art/placeholder/start.png";
 import mute from "./Art/placeholder/mute.png";
 import {SoundManager} from "./Global/SoundManager";
-
+import WebFont from "webfontloader";
 
 export enum Layers
 {
@@ -111,7 +111,7 @@ export class MainScene extends Scene
 
 export class LD50 extends Game
 {
-    static debug = true;
+    static debug = false;
     static muted = true;
     static musicPlaying = false;
     static audioAtlas: AudioAtlas = new AudioAtlas();
@@ -137,8 +137,15 @@ export class LD50 extends Game
         this.addResource("launchpad", new SpriteSheet(launchpadSpr, 18, 23));
         this.addResource("rockets", new SpriteSheet(rocketsSpr, 32, 32));
 
-        this.setScene(new MainScene(this));
+        WebFont.load({
+            custom: {
+                families: ["myPixelFont"]
+            }
+        });
 
+        this.resourceLoader.loadAll().then(() => {
+            this.setScene(new MainScene(this));
+        });
     }
 }
 

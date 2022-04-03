@@ -29,12 +29,11 @@ export class ScoreDisplay extends Entity {
     onAdded() {
         super.onAdded();
         const score = this.addComponent(new Score());
-        const font = this.addComponent(new TextDisp(10, 8, score.getScoreText(), {
+        this.addComponent(new TextDisp(10, 8, score.getScoreText(), {
             fontSize: 10,
             fontFamily: "myPixelFont",
             fill: 0xffffff,
         }));
-        font.pixiObj.resolution = 100;
     }
 }
 
