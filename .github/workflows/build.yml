@@ -24,6 +24,7 @@ jobs:
       with:
         node-version: 16.x
         cache: 'npm'
+        cache-dependency-path: "**/package-lock.json"
     - run: npm ci
       working-directory: lagom-engine
     - run: npm ci
