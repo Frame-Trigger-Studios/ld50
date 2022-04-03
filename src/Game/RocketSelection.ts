@@ -22,10 +22,10 @@ export class RocketSelection extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addChild(new TypePane(0, 0, 1, "QWER", RocketType.MISSILE));
+        this.addChild(new TypePane(0, 0, 1, "QWE", RocketType.MISSILE));
         this.addChild(new TypePane(80, 0, 1, "REWQWQ", RocketType.ICBM));
         this.addChild(new TypePane(0, 30, 1, "ASDF", RocketType.PASSENGER));
-        this.addChild(new TypePane(80, 30, 1, "FDSASA", RocketType.STARSHIP));
+        this.addChild(new TypePane(80, 30, 1, "FFAADDSS", RocketType.STARSHIP));
     }
 }
 
