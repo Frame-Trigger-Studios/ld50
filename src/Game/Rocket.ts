@@ -7,7 +7,6 @@ import {
     Entity,
     Game,
     MathUtil,
-    RenderCircle,
     Rigidbody,
     SimplePhysicsBody,
     Sprite,
@@ -109,6 +108,28 @@ export class Rocket extends Entity
                 xOff: 0,
                 yOff: -8
             }));
+
+        if (this.rocketType == RocketType.ICBM)
+        {
+            this.addComponent(new AnimatedSpriteController(0, [{
+                id: 0,
+                textures: this.getScene().game.getResource("fire").textureSliceFromSheet(),
+                config: {animationSpeed: 100, xAnchor: 0.5, yAnchor: 0, yOffset: 0, xOffset: -4}
+            }]));
+            this.addComponent(new AnimatedSpriteController(0, [{
+                id: 0,
+                textures: this.getScene().game.getResource("fire").textureSliceFromSheet(),
+                config: {animationSpeed: 100, xAnchor: 0.5, yAnchor: 0, yOffset: 0, xOffset: 4}
+            }]));
+        }
+        else
+        {
+            this.addComponent(new AnimatedSpriteController(0, [{
+                id: 0,
+                textures: this.getScene().game.getResource("fire").textureSliceFromSheet(),
+                config: {animationSpeed: 100, xAnchor: 0.5, yAnchor: 0, yOffset: 0}
+            }]));
+        }
 
         // this.addComponent(new RenderCircle(0, -8, colliderSize, 0x0000AA, 0xAA00FF));
 
