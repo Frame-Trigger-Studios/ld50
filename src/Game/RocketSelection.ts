@@ -60,8 +60,7 @@ export class TypedLettersTextDisp extends Entity
     onAdded()
     {
         super.onAdded();
-        const text = this.addComponent(new TextDisp(0, 0, this.text, {fill: "red", fontSize: 16, fontFamily: "myPixelFont"}));
-        text.pixiObj.resolution = 100;
+        this.addComponent(new TextDisp(0, 0, this.text, {fill: "red", fontSize: 16, fontFamily: "myPixelFont"}));
     }
 }
 
@@ -75,8 +74,7 @@ export class PreviewLettersTextDisp extends Entity
     onAdded()
     {
         super.onAdded();
-        const text = this.addComponent(new TextDisp(0, 0, this.text[0], {fill: "gray", fontSize: 16, fontFamily: "myPixelFont"}));
-        text.pixiObj.resolution = 100;
+        this.addComponent(new TextDisp(0, 0, this.text[0], {fill: "gray", fontSize: 16, fontFamily: "myPixelFont"}));
     }
 }
 
