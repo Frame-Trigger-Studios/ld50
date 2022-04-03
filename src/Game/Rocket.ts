@@ -7,6 +7,7 @@ import {
     Entity,
     Game,
     MathUtil,
+    RenderCircle,
     Rigidbody,
     SimplePhysicsBody,
     Sprite,
@@ -86,11 +87,11 @@ export class Rocket extends Entity
         }
 
         const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());
-        const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y,
-            mousePos.x, mousePos.y);
+        const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y, mousePos.x, mousePos.y);
         const velocity = MathUtil.lengthDirXY(speedMulti, -direction);
 
-        // this.addComponent(new RenderCircle(0, 0, 5, 0x0000AA, 0xAA00FF));
+        this.transform.rotation = -direction + MathUtil.degToRad(90);
+
         this.addComponent(new Rigidbody(BodyType.Discrete));
         this.addComponent(new Force(velocity));
         this.addComponent(new SimplePhysicsBody({angDrag: 0, linDrag: 0}));
@@ -98,8 +99,7 @@ export class Rocket extends Entity
         this.addComponent(
             new Sprite(texture, {
                 xAnchor: 0.5,
-                yAnchor: 0.75,
-                rotation: -direction + MathUtil.degToRad(90)
+                yAnchor: 0.75
             }));
 
         const coll = this.addComponent(
@@ -107,8 +107,10 @@ export class Rocket extends Entity
                 layer: Layers.Ship,
                 radius: colliderSize,
                 xOff: 0,
-                yOff: 0
+                yOff: -8
             }));
+
+        // this.addComponent(new RenderCircle(0, -8, colliderSize, 0x0000AA, 0xAA00FF));
 
         coll.onTriggerEnter.register((caller, {other, result}) => {
             if (other.layer === Layers.Asteroid)
@@ -198,6 +200,10 @@ export class Explosion extends Entity
                     animationEndEvent: () => this.destroy(), animationSpeed: 60
                 }
             }]));
-
+        // if (this.texName.startsWith("big")) {
+        //     this.addComponent(new ScreenShake(1, 900));
+        // } else {
+        //     this.addComponent(new ScreenShake(0.5, 200));
+        // }
     }
 }

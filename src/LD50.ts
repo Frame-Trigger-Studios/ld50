@@ -8,7 +8,7 @@ import {
     Game,
     Log,
     LogLevel,
-    Scene,
+    Scene, ScreenShaker,
     SimplePhysics,
     SpriteSheet,
     TimerSystem
@@ -100,6 +100,8 @@ export class MainScene extends Scene
         this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
         this.addSystem(new OffScreenPassenger());
+        // TODO before enabling, fix the mouse stuff
+        // this.addGlobalSystem(new ScreenShaker(EARTH_X, EARTH_Y));
         const collSystem = this.addGlobalSystem(new DiscreteRbodyCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
@@ -123,8 +125,8 @@ export class MainScene extends Scene
 
 export class LD50 extends Game
 {
-    static debug = false;
-    static muted = true;
+    static debug = true;
+    static muted = LD50.debug;
     static musicPlaying = false;
     static audioAtlas: AudioAtlas = new AudioAtlas();
 
