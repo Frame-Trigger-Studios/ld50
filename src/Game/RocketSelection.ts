@@ -1,11 +1,13 @@
 import {Component, Entity, GlobalSystem, Key, Sprite, TextDisp, Timer} from "lagom-engine";
-import {RocketType} from "../LD50";
+import {Layers, RocketType} from "../LD50";
 import {CompletedRocket} from "./RocketLoader";
 
 const DISABLE_ALPHA = 0.3;
 
-class RocketTypeModifier extends Component {
-    constructor(public type: RocketType) {
+class RocketTypeModifier extends Component
+{
+    constructor(public type: RocketType)
+    {
         super();
     }
 }
@@ -40,7 +42,7 @@ export class TypePane extends Entity
         this.addComponent(new Sprite(texture, {
             xAnchor: 0,
             yAnchor: 0.1,
-            xOffset: -8 ,
+            xOffset: -8,
         }));
         // Big rockets have even enum values
         const spriteWidth = (this.rocketType % 2 == 0) ? 20 : 16;
@@ -143,15 +145,16 @@ export class TypingSystem extends GlobalSystem
         {
             // assume only one started
             matchingEntity = startedEntities[0];
-        } else
+        }
+        else
         {
             const matchingEntities = typingEntities
-                .filter(entity => !entity.getComponent(Timer) )
+                .filter(entity => !entity.getComponent(Timer))
                 .filter(entity => {
-                const typedLetters = entity.getComponent<TypedLetters>(TypedLetters);
-                // console.log("typed: " + typedLetters?.pattern + " " + typedLetters?.typed + " " + letter);
-                return typedLetters?.pattern.startsWith(typedLetters.typed + letter);
-            });
+                    const typedLetters = entity.getComponent<TypedLetters>(TypedLetters);
+                    // console.log("typed: " + typedLetters?.pattern + " " + typedLetters?.typed + " " + letter);
+                    return typedLetters?.pattern.startsWith(typedLetters.typed + letter);
+                });
             if (matchingEntities.length > 0)
             {
                 matchingEntity = matchingEntities[0];
@@ -165,7 +168,7 @@ export class TypingSystem extends GlobalSystem
             const textDisp = typingEntity.findChildWithName("TypedLettersTextDisp");
             const text = textDisp?.getComponent<TextDisp>(TextDisp);
             const expectedText = typingEntity.findChildWithName("PreviewLettersTextDisp")
-                ?.getComponent<TextDisp>(TextDisp);
+                                             ?.getComponent<TextDisp>(TextDisp);
             if (typedLetters == null)
             {
                 return;
@@ -180,22 +183,30 @@ export class TypingSystem extends GlobalSystem
                     return;
                 }
 
-                if (typedLetters.typed == typedLetters.pattern) {
+                if (typedLetters.typed == typedLetters.pattern)
+                {
                     this.resetTyped(typedLetters, text, expectedText);
                     const rocketType = matchingEntity.getComponent<RocketTypeModifier>(RocketTypeModifier);
-                    if (rocketType) {
+                    if (rocketType)
+                    {
                         matchingEntity.addComponent(new CompletedRocket(rocketType.type));
                     }
                     TypingSystem.changeTypingPaneAlpha([typingEntity], DISABLE_ALPHA);
-                } else {
+                }
+                else
+                {
                     text.pixiObj.text = typedLetters.typed;
-                    if (expectedText) {
+                    if (expectedText)
+                    {
                         expectedText.pixiObj.text = typedLetters.pattern;
                     }
 
-                    TypingSystem.changeTypingPaneAlpha(typingEntities.filter(entity => entity != typingEntity), DISABLE_ALPHA);
+                    TypingSystem.changeTypingPaneAlpha(typingEntities.filter(entity => entity != typingEntity),
+                        DISABLE_ALPHA);
                 }
-            } else {
+            }
+            else
+            {
                 this.resetTyped(typedLetters, text, expectedText);
                 TypingSystem.changeTypingPaneAlpha(typingEntities.filter(entity => !entity.getComponent(Timer)), 1);
 
@@ -219,24 +230,52 @@ export class TypingSystem extends GlobalSystem
     }
 
     // Naughty naughty
-    public static changeTypingPaneAlpha(entities: Entity[], alpha: number) {
+    public static changeTypingPaneAlpha(entities: Entity[], alpha: number)
+    {
         entities
             .forEach(entity => {
-            const sprite = entity.getComponent<Sprite>(Sprite);
-            if (sprite) {
-                sprite.pixiObj.alpha = alpha;
-            }
-            const previewText = entity.findChildWithName("PreviewLettersTextDisp")?.getComponent<TextDisp>(TextDisp);
-            if (previewText) {
-                previewText.pixiObj.alpha = alpha;
-            }
-        });
+                const sprite = entity.getComponent<Sprite>(Sprite);
+                if (sprite)
+                {
+                    sprite.pixiObj.alpha = alpha;
+                }
+                const previewText = entity.findChildWithName("PreviewLettersTextDisp")
+                                          ?.getComponent<TextDisp>(TextDisp);
+                if (previewText)
+                {
+                    previewText.pixiObj.alpha = alpha;
+                }
+            });
     }
 }
 
-export class LaunchpadSprite extends Sprite {
+export class LaunchpadPreview extends Entity
+{
+    constructor(readonly texture: never)
+    {
+        super("launchpreview", 0, 0, Layers.Earth);
+    }
+
+    onAdded()
+    {
+        super.onAdded();
+
+        this.addComponent(new Sprite(this.getScene().game.getResource("launchpad").texture(1, 0)));
+        this.addComponent(new LaunchpadSprite(this.texture));
+    }
+}
+
+export class LaunchpadSprite extends Sprite
+{
     constructor(texture: never /* PIXI.Texture */)
     {
-        super(<never>texture, {xAnchor:0.5, yAnchor:0.75});
+        super(<never>texture, {xAnchor: 0.5, yAnchor: 0.75});
+    }
+}
+export class LaunchpadArrow extends Sprite
+{
+    constructor(texture: never /* PIXI.Texture */)
+    {
+        super(<never>texture, {yAnchor: 1, xAnchor: 0.5});
     }
 }
