@@ -1,5 +1,5 @@
 import {SiloAmmo, SiloThing} from "./SiloAimer";
-import {Button, Entity, Game, System, Timer} from "lagom-engine";
+import {Button, Entity, Game, Mouse, System, Timer} from "lagom-engine";
 import {Rocket} from "./Rocket";
 import {CompletedRocket} from "./RocketLoader";
 import {TypedLetters, TypingSystem} from "./RocketSelection";
@@ -15,7 +15,7 @@ export class SiloShooter extends System<[SiloThing, SiloAmmo]>
     {
         this.runOnEntities((entity: Entity, silo: SiloThing, ammo: SiloAmmo) => {
 
-            if (Game.mouse.isButtonReleased(Button.LEFT) && ammo.hasRocket) {
+            if (this.scene.game.mouse.isButtonReleased(Button.LEFT) && ammo.hasRocket) {
                 this.getScene().addEntity(
                     new Rocket(entity.transform.getGlobalPosition().x, entity.transform.getGlobalPosition().y, ammo.rocket));
 

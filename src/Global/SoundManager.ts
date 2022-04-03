@@ -13,7 +13,7 @@ class MuteListener extends System<[AnimatedSpriteController, MuteComp]>
     update(delta: number): void
     {
         this.runOnEntities((e: Entity, spr: AnimatedSpriteController) => {
-            if (Mouse.isButtonPressed(Button.LEFT))
+            if (this.scene.game.mouse.isButtonPressed(Button.LEFT))
             {
                 const pos = e.scene.game.renderer.plugins.interaction.mouse.global;
 

@@ -1,4 +1,4 @@
-import {Component, Entity, Game, MathUtil, Sprite, System,} from "lagom-engine";
+import {Component, Entity, Game, MathUtil, Mouse, Sprite, System,} from "lagom-engine";
 import {EARTH_X, EARTH_Y, RocketType} from "../LD50";
 import {LaunchpadArrow, LaunchpadSprite} from "./RocketSelection";
 
@@ -57,7 +57,7 @@ export class SiloAimer extends System<[SiloThing, Sprite]>
     update(delta: number)
     {
         this.runOnEntities((entity: Entity, silo: SiloThing, sprite: Sprite) => {
-            const mousePos = this.scene.camera.viewToWorld(Game.mouse.getPosX(), Game.mouse.getPosY());
+            const mousePos = this.scene.camera.viewToWorld(this.scene.game.mouse.getPosX(), this.scene.game.mouse.getPosY());
 
             const direction = MathUtil.pointDirection(EARTH_X,
                 EARTH_Y,
