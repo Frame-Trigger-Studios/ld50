@@ -173,13 +173,13 @@ export class LD50 extends Game
         music.loop(true);
         music.volume(25);
 
-        LD50.audioAtlas.load("bigExplosion", bigExplosionSound);
-        LD50.audioAtlas.load("smallExplosion", smallExplosionSound);
-        LD50.audioAtlas.load("peopleEscape", peopleEscapeSound);
-        LD50.audioAtlas.load("rocketBuilt", rocketBuiltSound);
-        LD50.audioAtlas.load("rocketLaunch", rocketLaunchSound);
-        LD50.audioAtlas.load("bigRocketLaunch", bigRocketLaunchSound);
-        LD50.audioAtlas.load("rocketAvailable", rocketAvailable);
+        LD50.audioAtlas.load("bigExplosion", bigExplosionSound).volume(0.8);
+        LD50.audioAtlas.load("smallExplosion", smallExplosionSound).volume(0.8);
+        LD50.audioAtlas.load("peopleEscape", peopleEscapeSound).volume(0.5);
+        LD50.audioAtlas.load("rocketBuilt", rocketBuiltSound).volume(0.6);
+        LD50.audioAtlas.load("rocketLaunch", rocketLaunchSound).volume(0.6);
+        LD50.audioAtlas.load("bigRocketLaunch", bigRocketLaunchSound).volume(0.8);
+        LD50.audioAtlas.load("rocketAvailable", rocketAvailable).volume(0);
 
         this.addResource("mute", new SpriteSheet(mute, 16, 16));
         this.addResource("titleScreen", new SpriteSheet(startScreen, GAME_WIDTH, GAME_HEIGHT));
