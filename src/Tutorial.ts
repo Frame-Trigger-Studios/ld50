@@ -52,7 +52,7 @@ export class Tutorial extends Entity
                 this.addComponent(new PulseMe(2.5, [Key.KeyA, Key.KeyF], false, [2, 213, 143, 25]));
                 break;
         }
-        this.addComponent(new Timer(200, this, false)).onTrigger.register(timerCb);
+        this.addComponent(new Timer(600, this, false)).onTrigger.register(timerCb);
     }
 }
 
@@ -84,7 +84,7 @@ const timerCb = (caller: unknown, data: Entity): void => {
     }
     pulse.txtState = !pulse.txtState;
     text.destroy();
-    data.addComponent(new Timer(650, data, false)).onTrigger.register(timerCb);
+    data.addComponent(new Timer(600, data, false)).onTrigger.register(timerCb);
 };
 
 class PulseMe extends Component
