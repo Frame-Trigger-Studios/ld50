@@ -2,7 +2,7 @@ import {SiloAmmo, SiloThing} from "./SiloAimer";
 import {Button, Entity, Game, Mouse, System, Timer} from "lagom-engine";
 import {Rocket} from "./Rocket";
 import {CompletedRocket} from "./RocketLoader";
-import {TypedLetters, TypingSystem} from "./RocketSelection";
+import {CooldownTextDisp, TypedLetters, TypingSystem} from "./RocketSelection";
 import {RocketType} from "../LD50";
 
 export class SiloShooter extends System<[SiloThing, SiloAmmo]>
@@ -48,6 +48,9 @@ export class SiloShooter extends System<[SiloThing, SiloAmmo]>
                         if (cooldown > 0) {
                             builders = builders.filter(entity => entity != rocketBuilder);
 
+                            const spriteWidth = (completedRocket.rocketType % 2 == 0) ? 20 : 16;
+                            rocketBuilder.addChild(new CooldownTextDisp(spriteWidth + 20, 5, 0, cooldown));
+
                             rocketBuilder.addComponent(new Timer(cooldown * 1000, rocketBuilder, false))
                                 .onTrigger.register(((caller, data) => {
 
@@ -58,6 +61,7 @@ export class SiloShooter extends System<[SiloThing, SiloAmmo]>
                                 if (!buidlingInProgress) {
                                     TypingSystem.changeTypingPaneAlpha([rocketBuilder], 1);
                                 }
+
                                 caller.destroy();
                             }));
                         }
