@@ -17,7 +17,7 @@ export class Score extends Component {
     }
 
     public ejectHumans(count: number) {
-        this.remainingToAdd -= count;
+        this.remainingToAdd += count;
     }
 
     public getScoreText(): string {
@@ -48,15 +48,16 @@ export class ScoreUpdater extends System<[Score, TextDisp]> {
 
                 // Lerp score so the value ticks up over a second rather than all at once.
                 if (score.remainingToAdd != 0) {
-                    const newRemaining = Math.floor(MathUtil.lerp(score.remaining, score.remaining + score.remainingToAdd, 0.5/delta));
-                    score.remainingToAdd += score.remaining - newRemaining;
-                    score.remaining = newRemaining;
+                    const factor = score.remainingToAdd > 500 ? 2_384_231 : 1;
+                    const amount = Math.min(Math.floor(factor * delta), score.remainingToAdd);
+                    score.remainingToAdd -= amount;
+                    score.remaining -= amount;
                     changed = true;
                 }
                 if (score.savedToAdd != 0) {
-                    const newSaved = Math.ceil(MathUtil.lerp(score.saved, score.saved + score.savedToAdd, 0.5/delta));
-                    score.savedToAdd += score.saved - newSaved;
-                    score.saved = newSaved;
+                    const amount = Math.min(Math.floor(delta), score.savedToAdd);
+                    score.saved += amount;
+                    score.savedToAdd -= amount;
                     changed = true;
                 }
 

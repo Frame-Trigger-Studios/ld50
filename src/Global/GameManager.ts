@@ -42,7 +42,7 @@ export class GameManagerSystem extends System<[GameData]> {
                 this.spawnAsteroid(this.getScene());
                 let nextSpawnMs = 200;
                 if (gameData.elapsedTime < SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000) {
-                    nextSpawnMs = MathUtil.lerp(1500, 200, gameData.elapsedTime / (SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000));
+                    nextSpawnMs = MathUtil.lerp(2000, 200, gameData.elapsedTime / (SECONDS_TO_MAX_ASTEROID_SPAWN_RATE * 1000));
                 }
                 gameData.msUntilNextAsteroid = nextSpawnMs;
             }
@@ -73,7 +73,7 @@ export class GameManagerSystem extends System<[GameData]> {
         // 1 - 3
         const radius = 2 + Math.floor(Math.random() * 4);
         const linearDrag = Math.random() * 0.00001;
-        const speed = randomRange(0.01, 0.05) * ASTEROID_SPEED_MULTIPLIER;
+        const speed = randomRange(0.01, 0.03) * ASTEROID_SPEED_MULTIPLIER;
         const variance = randomRange(-Math.PI/4, Math.PI/4);
 
         const angleToEarth = MathUtil.pointDirection(x, y, EARTH_X, EARTH_Y) + variance;
