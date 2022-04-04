@@ -27,7 +27,16 @@ import {OffScreenPassenger, ScoreDisplay, ScoreUpdater} from "./Global/Score";
 import {DestroySystem} from "./Systems/DestroyMeNextFrame";
 import {RocketLoaderSystem} from "./Game/RocketLoader";
 import {Earth} from "./Game/Earth";
+
 import grooveMusic from "./Sound/LD50-v1-1.mp3";
+import bigExplosionSound from "./Sound/big_explosion.wav";
+import smallExplosionSound from "./Sound/small_explosion.wav";
+import peopleEscapeSound from "./Sound/people_escape_trimmed.wav";
+import rocketBuiltSound from "./Sound/rocket_built.wav";
+import rocketLaunchSound from "./Sound/rocket_launch_short.wav";
+import bigRocketLaunchSound from "./Sound/rocket_launch_short_big.wav";
+import rocketAvailable from "./Sound/rocket_available.wav";
+
 import {ClickListener, ScreenCard} from "./Global/SplashScreens";
 import youLoseScreen from "./Art/endscreen.png";
 import startScreen from "./Art/startscreen-splash.png";
@@ -40,7 +49,8 @@ import smallExplosionAlt from "./Art/smallexplosionalt.png";
 import fireSpr from "./Art/fire.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
-import {BoxPulser, Tutorial} from "./Tutorial";
+import {Tutorial, TutorialMonitor} from "./Tutorial";
+import {ShrinkAndRun, TriggerShrink} from "./Game/Rocket";
 
 
 export enum Layers
@@ -119,12 +129,14 @@ export class MainScene extends Scene
         this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
         this.addSystem(new OffScreenPassenger());
+        this.addSystem(new TriggerShrink());
+        this.addSystem(new ShrinkAndRun());
         this.addGlobalSystem(new ScreenShaker(EARTH_X, EARTH_Y));
         const collSystem = this.addGlobalSystem(new DiscreteRbodyCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
         this.addSystem(new SiloShooter());
-        this.addSystem(new BoxPulser());
+        this.addSystem(new TutorialMonitor());
 
         Log.logLevel = LogLevel.NONE;
         if (LD50.debug)
@@ -160,6 +172,14 @@ export class LD50 extends Game
         const music = LD50.audioAtlas.load("music", grooveMusic);
         music.loop(true);
         music.volume(25);
+
+        LD50.audioAtlas.load("bigExplosion", bigExplosionSound);
+        LD50.audioAtlas.load("smallExplosion", smallExplosionSound);
+        LD50.audioAtlas.load("peopleEscape", peopleEscapeSound);
+        LD50.audioAtlas.load("rocketBuilt", rocketBuiltSound);
+        LD50.audioAtlas.load("rocketLaunch", rocketLaunchSound);
+        LD50.audioAtlas.load("bigRocketLaunch", bigRocketLaunchSound);
+        LD50.audioAtlas.load("rocketAvailable", rocketAvailable);
 
         this.addResource("mute", new SpriteSheet(mute, 16, 16));
         this.addResource("titleScreen", new SpriteSheet(startScreen, GAME_WIDTH, GAME_HEIGHT));

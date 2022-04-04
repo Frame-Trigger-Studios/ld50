@@ -22,7 +22,7 @@ export class Tutorial extends Entity
                     fontFamily: "myPixelFont",
                     fill: 0x6ceded,
                 }));
-                this.addComponent(new PulseMe(2.5, [Key.KeyQ, Key.KeyR], false, [2, 181, 143, 25]));
+                this.addComponent(new TutorialData([Key.KeyQ, Key.KeyR], false, [2, 181, 143, 25]));
                 break;
             case TutorialState.ClickToShoot:
                 this.addComponent(new RenderRect(-100, -100, 1, 1));
@@ -31,7 +31,7 @@ export class Tutorial extends Entity
                     fontFamily: "myPixelFont",
                     fill: 0x6ceded,
                 }));
-                this.addComponent(new PulseMe(2.5, [], true, [-100, -100, 1, 1]));
+                this.addComponent(new TutorialData( [], true, [-100, -100, 1, 1]));
                 break;
             case TutorialState.ClickToSaveCivs:
                 this.addComponent(new RenderRect(-100, -100, 1, 1));
@@ -40,7 +40,7 @@ export class Tutorial extends Entity
                     fontFamily: "myPixelFont",
                     fill: 0x6ceded,
                 }));
-                this.addComponent(new PulseMe(2.5, [], true, [-100, -100, 1, 1]));
+                this.addComponent(new TutorialData([], true, [-100, -100, 1, 1]));
                 break;
             case TutorialState.Civilians:
                 this.addComponent(new RenderRect(2, 213, 143, 25, null, 0x6ceded));
@@ -49,15 +49,15 @@ export class Tutorial extends Entity
                     fontFamily: "myPixelFont",
                     fill: 0x6ceded,
                 }));
-                this.addComponent(new PulseMe(2.5, [Key.KeyA, Key.KeyF], false, [2, 213, 143, 25]));
+                this.addComponent(new TutorialData([Key.KeyA, Key.KeyF], false, [2, 213, 143, 25]));
                 break;
         }
-        this.addComponent(new Timer(200, this, false)).onTrigger.register(timerCb);
+        this.addComponent(new Timer(600, this, false)).onTrigger.register(timerCb);
     }
 }
 
 const timerCb = (caller: unknown, data: Entity): void => {
-    const pulse = data.getComponent<PulseMe>(PulseMe);
+    const pulse = data.getComponent<TutorialData>(TutorialData);
     const text = data.getComponent<TextDisp>(TextDisp);
     const rect = data.getComponent<RenderRect>(RenderRect);
     if (pulse == null || text == null || rect == null) return;
@@ -84,39 +84,27 @@ const timerCb = (caller: unknown, data: Entity): void => {
     }
     pulse.txtState = !pulse.txtState;
     text.destroy();
-    data.addComponent(new Timer(650, data, false)).onTrigger.register(timerCb);
+    data.addComponent(new Timer(600, data, false)).onTrigger.register(timerCb);
 };
 
-class PulseMe extends Component
+class TutorialData extends Component
 {
-    public dir = -1;
     public txtState = true;
 
-    constructor(readonly speed: number, readonly clearKeys: Key[], readonly clickClear: boolean,
+    constructor(readonly clearKeys: Key[], readonly clickClear: boolean,
                 readonly rectPos: [number, number, number, number])
     {
         super();
     }
 }
 
-export class BoxPulser extends System<[PulseMe, RenderRect]>
+export class TutorialMonitor extends System<[TutorialData, RenderRect]>
 {
-    types = () => [PulseMe, RenderRect];
+    types = () => [TutorialData, RenderRect];
 
     update(delta: number): void
     {
-        this.runOnEntities((entity, pulseMe, renderRect) => {
-            // renderRect.pixiObj.alpha += pulseMe.dir * pulseMe.speed * (delta / 1000);
-
-            if (renderRect.pixiObj.alpha > 1)
-            {
-                pulseMe.dir = -1;
-            }
-
-            if (renderRect.pixiObj.alpha < 0)
-            {
-                pulseMe.dir = 1;
-            }
+        this.runOnEntities((entity, pulseMe) => {
 
             if (this.getScene().game.keyboard.isKeyPressed(...pulseMe.clearKeys)
                 || (pulseMe.clickClear && this.getScene().game.mouse.isButtonPressed(Button.LEFT)))
@@ -137,16 +125,3 @@ export class BoxPulser extends System<[PulseMe, RenderRect]>
         });
     }
 }
-
-// export class ScoreDisplay extends Entity {
-//
-//     onAdded() {
-//         super.onAdded();
-//         const score = this.addComponent(new Score());
-//         this.addComponent(new TextDisp(10, 8, score.getScoreText(), {
-//             fontSize: 10,
-//             fontFamily: "myPixelFont",
-//             fill: 0x6ceded,
-//         }));
-//     }
-// }

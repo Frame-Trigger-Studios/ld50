@@ -1,6 +1,7 @@
 import {Component, Entity, System} from "lagom-engine";
 import {SiloAmmo} from "./SiloAimer";
-import {RocketType} from "../LD50";
+import {LD50, RocketType} from "../LD50";
+import {SoundManager} from "../Global/SoundManager";
 
 
 export class CompletedRocket extends Component
@@ -22,6 +23,8 @@ export class RocketLoaderSystem extends System<[CompletedRocket]>
             if (siloAmmo && !siloAmmo.hasRocket)
             {
                 siloAmmo.setRocket(completedRocket.rocketType);
+                (this.getScene().getEntityWithName("audio") as SoundManager)
+                    .playSound("rocketBuilt");
             }
         });
     }

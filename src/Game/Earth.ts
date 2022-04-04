@@ -13,6 +13,7 @@ import {Layers} from "../LD50";
 import {Score} from "../Global/Score";
 import {Asteroid} from "./Asteroid";
 import {Explosion} from "./Rocket";
+import {SoundManager} from "../Global/SoundManager";
 
 export class Earth extends Entity
 {
@@ -46,6 +47,8 @@ export class Earth extends Entity
             {
                 // Add an explosion
                 this.getScene().addEntity(new Explosion(other.getEntity(), "smallexplosion"));
+                (this.getScene().getEntityWithName("audio") as SoundManager)
+                    .playSound("smallExplosion");
 
                 let amountToLose = 500_000_000 * ((other.getEntity() as Asteroid).radius - 1);
                 amountToLose += MathUtil.randomRange(-250_000_000, 250_000_000);

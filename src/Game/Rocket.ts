@@ -5,21 +5,21 @@ import {
     CollisionSystem,
     Component,
     Entity,
-    Game,
     MathUtil,
-    Mouse,
     Rigidbody,
     ScreenShake,
     SimplePhysicsBody,
     Sprite,
+    System,
     Util
 } from "lagom-engine";
 import {Force} from "../Systems/Physics";
-import {EARTH_X, EARTH_Y, Layers, RocketType} from "../LD50";
+import {EARTH_X, EARTH_Y, GAME_HEIGHT, GAME_WIDTH, Layers, RocketType} from "../LD50";
 import {OffScreenDestroyable} from "../Systems/OffScreenDestroyer";
 import {DestroyMeNextFrame} from "../Systems/DestroyMeNextFrame";
 import {Asteroid} from "./Asteroid";
 import {Score} from "../Global/Score";
+import {SoundManager} from "../Global/SoundManager";
 
 const SMALL_MISSILE_RADIUS = 20;
 const BIG_MISSILE_RADIUS = 75;
@@ -87,7 +87,8 @@ export class Rocket extends Entity
             this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.ejectHumans(BIG_PASSENGER_COUNT);
         }
 
-        const mousePos = this.scene.camera.viewToWorld(this.scene.game.mouse.getPosX(), this.scene.game.mouse.getPosY());
+        const mousePos = this.scene.camera.viewToWorld(this.scene.game.mouse.getPosX(),
+            this.scene.game.mouse.getPosY());
         const direction = MathUtil.pointDirection(EARTH_X, EARTH_Y, mousePos.x, mousePos.y);
         const velocity = MathUtil.lengthDirXY(speedMulti, -direction);
 
@@ -146,6 +147,7 @@ export class Rocket extends Entity
     explode()
     {
         let texture = "smallexplosion";
+        let sound = "bigExplosion";
         switch (this.rocketType)
         {
             case RocketType.STARSHIP:
@@ -153,16 +155,20 @@ export class Rocket extends Entity
                 break;
             case RocketType.PASSENGER:
                 texture = "smallexplosion2";
+                sound = "smallExplosion";
                 break;
             case RocketType.ICBM:
                 texture = "bigexplosion2";
                 break;
             case RocketType.MISSILE:
                 texture = "smallexplosion";
+                sound = "smallExplosion";
                 break;
         }
 
         this.getScene().addEntity(new Explosion(this, texture));
+        (this.getScene().getEntityWithName("audio") as SoundManager)
+            .playSound(sound);
 
         const missile = this.getComponent<Missile>(Missile);
         if (!missile)
@@ -223,10 +229,63 @@ export class Explosion extends Entity
                     animationEndEvent: () => this.destroy(), animationSpeed: 60
                 }
             }]));
-        if (this.texName.startsWith("big")) {
+        if (this.texName.startsWith("big"))
+        {
             this.addComponent(new ScreenShake(0.8, 900));
-        } else {
+        }
+        else
+        {
             this.addComponent(new ScreenShake(0.5, 200));
         }
+    }
+}
+
+export class ShrinkAndRunning extends Component
+{
+}
+
+export class ShrinkAndRun extends System<[PassengerShip, Sprite, AnimatedSpriteController, Rigidbody, ShrinkAndRunning]>
+{
+    types = () => [PassengerShip, Sprite, AnimatedSpriteController, Rigidbody, ShrinkAndRunning];
+
+    update(delta: number)
+    {
+        this.runOnEntities((entity, ship, sprite, sprite2, body) => {
+            const curr = sprite.pixiObj.transform.scale;
+            curr.x = MathUtil.clamp(curr.x - delta / 300, 0, 100);
+            curr.y = MathUtil.clamp(curr.y - delta / 300, 0, 100);
+            sprite.applyConfig({xScale: curr.x, yScale: curr.y});
+            sprite2.applyConfig({xScale: curr.x, yScale: curr.y});
+
+            const dir = MathUtil.pointDirection(0, 0, body.pendingX, body.pendingY);
+            const f = MathUtil.lengthDirXY(1, -dir).multiply(delta / 10);
+            body.pendingX += f.x;
+            body.pendingY += f.y;
+        });
+    }
+}
+
+export class TriggerShrink extends System<[PassengerShip]>
+{
+    types = () => [PassengerShip];
+
+    update(delta: number)
+    {
+        this.runOnEntities(((entity, ship) => {
+            if (entity.transform.x > GAME_WIDTH - 20
+                || entity.transform.x < 20
+                || entity.transform.y > GAME_HEIGHT - 20
+                || entity.transform.y < 20)
+            {
+                if (entity.getComponent(ShrinkAndRunning) === null)
+                {
+                    // Close enough, safe :)
+                    entity.getComponent<CircleCollider>(CircleCollider)?.destroy();
+                    entity.addComponent(new ShrinkAndRunning());
+                    (this.getScene().getEntityWithName("audio") as SoundManager)
+                        .playSound("peopleEscape");
+                }
+            }
+        }));
     }
 }
