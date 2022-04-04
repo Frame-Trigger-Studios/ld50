@@ -1,4 +1,4 @@
-import {Component, Entity, Log, RenderRect, System, TextDisp} from "lagom-engine";
+import {Component, Entity, Key, RenderRect, System, TextDisp} from "lagom-engine";
 import {Layers} from "./LD50";
 
 export class Tutorial extends Entity
@@ -21,6 +21,7 @@ export class Tutorial extends Entity
                 fontFamily: "myPixelFont",
                 fill: 0x6ceded,
             }));//.pixiObj.linestyle;
+            this.addComponent(new PulseMe(2.5, [Key.KeyQ, Key.KeyW]));
         } else
         {
             this.addComponent(new RenderRect(2, 180, 183, 30, null, 0x6ceded));
@@ -29,8 +30,8 @@ export class Tutorial extends Entity
                 fontFamily: "myPixelFont",
                 fill: 0x6ceded,
             }));
+            this.addComponent(new PulseMe(2.5, [Key.KeyA, Key.KeyS]));
         }
-        this.addComponent(new PulseMe(2.5));
     }
 }
 
@@ -38,7 +39,7 @@ class PulseMe extends Component
 {
     public dir = -1;
 
-    constructor(readonly speed: number)
+    constructor(readonly speed: number, readonly clearKeys: Key[])
     {
         super();
     }
@@ -50,7 +51,6 @@ export class TextPulser extends System<[PulseMe, RenderRect]>
 
     update(delta: number): void
     {
-        Log.error("he;l");
         this.runOnEntities((entity, pulseMe, renderRect) => {
             renderRect.pixiObj.alpha += pulseMe.dir * pulseMe.speed * (delta / 1000);
             // renderRect.pixiObj.alpha -= 0.05;
@@ -64,9 +64,12 @@ export class TextPulser extends System<[PulseMe, RenderRect]>
             {
                 pulseMe.dir = 1;
             }
+
+            if (this.getScene().game.keyboard.isKeyPressed(...pulseMe.clearKeys)) {
+                entity.destroy();
+            }
         });
     }
-
 }
 
 // export class ScoreDisplay extends Entity {
