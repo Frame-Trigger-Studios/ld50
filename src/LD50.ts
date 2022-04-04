@@ -57,7 +57,8 @@ export enum TutorialState
 {
     Rockets,
     ClickToShoot,
-    Civillians,
+    Civilians,
+    ClickToSaveCivs,
     Finished
 }
 

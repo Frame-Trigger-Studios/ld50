@@ -33,7 +33,16 @@ export class Tutorial extends Entity
                 }));
                 this.addComponent(new PulseMe(2.5, [], true, [-100, -100, 1, 1]));
                 break;
-            case TutorialState.Civillians:
+            case TutorialState.ClickToSaveCivs:
+                this.addComponent(new RenderRect(-100, -100, 1, 1));
+                this.addComponent(new TextDisp(190, 180, "Click to launch the escape pod!", {
+                    fontSize: 10,
+                    fontFamily: "myPixelFont",
+                    fill: 0x6ceded,
+                }));
+                this.addComponent(new PulseMe(2.5, [], true, [-100, -100, 1, 1]));
+                break;
+            case TutorialState.Civilians:
                 this.addComponent(new RenderRect(2, 213, 143, 25, null, 0x6ceded));
                 this.addComponent(new TextDisp(160, 213, "Launch escape pods\nto safety!", {
                     fontSize: 10,
@@ -114,7 +123,7 @@ export class BoxPulser extends System<[PulseMe, RenderRect]>
             {
                 MainScene.tutorialState += 1;
 
-                if (MainScene.tutorialState === TutorialState.Civillians)
+                if (MainScene.tutorialState === TutorialState.Civilians)
                 {
                     this.getScene()
                         .addEntity(new Entity("tutTimer", 0, 0))
