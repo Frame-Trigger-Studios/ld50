@@ -40,7 +40,7 @@ import smallExplosionAlt from "./Art/smallexplosionalt.png";
 import fireSpr from "./Art/fire.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
-import {TextPulser, Tutorial} from "./Tutorial";
+import {BoxPulser, Tutorial} from "./Tutorial";
 
 
 export enum Layers
@@ -51,6 +51,14 @@ export enum Layers
     Ship,
     Explosion,
     GUI
+}
+
+export enum TutorialState
+{
+    Rockets,
+    ClickToShoot,
+    Civillians,
+    Finished
 }
 
 export const CANVAS_WIDTH = 426;
@@ -80,6 +88,7 @@ matrix.addCollision(Layers.Explosion, Layers.Asteroid);
 
 export class MainScene extends Scene
 {
+    static tutorialState = TutorialState.Rockets;
     static firstLoad = true;
 
     onAdded()
@@ -114,7 +123,7 @@ export class MainScene extends Scene
 
         this.addSystem(new SiloAimer());
         this.addSystem(new SiloShooter());
-        this.addSystem(new TextPulser());
+        this.addSystem(new BoxPulser());
 
         Log.logLevel = LogLevel.NONE;
         if (LD50.debug)
@@ -132,7 +141,7 @@ export class MainScene extends Scene
         this.addEntity(new ScoreDisplay("Score", 0, 0, Layers.GUI));
         this.addGUIEntity(new RocketSelection(0, this.camera.height - 58, Layers.GUI));
 
-        this.addGUIEntity(new Tutorial("rocket"));
+        this.addGUIEntity(new Tutorial());
     }
 }
 
