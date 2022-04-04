@@ -31,7 +31,7 @@ import {Earth} from "./Game/Earth";
 import grooveMusic from "./Sound/LD50-v1-1.mp3";
 import bigExplosionSound from "./Sound/big_explosion.wav";
 import smallExplosionSound from "./Sound/small_explosion.wav";
-import peopleEscapeSound from "./Sound/people_escape.wav";
+import peopleEscapeSound from "./Sound/people_escape_trimmed.wav";
 import rocketBuiltSound from "./Sound/rocket_built.wav";
 import rocketLaunchSound from "./Sound/rocket_launch_short.wav";
 import bigRocketLaunchSound from "./Sound/rocket_launch_short_big.wav";

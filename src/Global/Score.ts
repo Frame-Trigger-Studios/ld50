@@ -105,8 +105,6 @@ export class OffScreenPassenger extends System<[PassengerShip]>
             {
 
                 this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.saveHumans(ship.capacity);
-                (this.getScene().getEntityWithName("audio") as SoundManager)
-                    .playSound("peopleEscape");
 
                 entity.destroy();
             }

@@ -279,7 +279,11 @@ export class TriggerShrink extends System<[PassengerShip]>
             {
                 if (entity.getComponent(ShrinkAndRunning) === null)
                 {
+                    // Close enough, safe :)
+                    entity.getComponent<CircleCollider>(CircleCollider)?.destroy();
                     entity.addComponent(new ShrinkAndRunning());
+                    (this.getScene().getEntityWithName("audio") as SoundManager)
+                        .playSound("peopleEscape");
                 }
             }
         }));
