@@ -29,7 +29,7 @@ import {RocketLoaderSystem} from "./Game/RocketLoader";
 import {Earth} from "./Game/Earth";
 import grooveMusic from "./Sound/LD50-v1-1.mp3";
 import {ClickListener, ScreenCard} from "./Global/SplashScreens";
-import youLoseScreen from "./Art/placeholder/game-over.png";
+import youLoseScreen from "./Art/endscreen.png";
 import startScreen from "./Art/startscreen-splash.png";
 import background from "./Art/background.png";
 import mute from "./Art/mute.png";
