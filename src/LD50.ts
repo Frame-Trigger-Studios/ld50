@@ -1,7 +1,6 @@
 import {ApplyForce, DiscreteRbodyCollisionSystem, PhysicsEngine} from "./Systems/Physics";
 import {
     AudioAtlas,
-    Camera,
     CollisionMatrix,
     DebugCollisionSystem,
     Diagnostics,
@@ -9,8 +8,8 @@ import {
     Game,
     Log,
     LogLevel,
-    MathUtil,
-    Scene, ScreenShaker,
+    Scene,
+    ScreenShaker,
     SimplePhysics,
     SpriteSheet,
     TimerSystem
@@ -41,6 +40,7 @@ import smallExplosionAlt from "./Art/smallexplosionalt.png";
 import fireSpr from "./Art/fire.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
+import {TextPulser, Tutorial} from "./Tutorial";
 
 
 export enum Layers
@@ -109,30 +109,30 @@ export class MainScene extends Scene
         this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
         this.addSystem(new OffScreenPassenger());
-        // TODO before enabling, fix the mouse stuff
-        // this.addGlobalSystem(new ScreenShaker());
         this.addGlobalSystem(new ScreenShaker(EARTH_X, EARTH_Y));
         const collSystem = this.addGlobalSystem(new DiscreteRbodyCollisionSystem(matrix));
 
         this.addSystem(new SiloAimer());
         this.addSystem(new SiloShooter());
+        this.addSystem(new TextPulser());
 
         Log.logLevel = LogLevel.NONE;
-
         if (LD50.debug)
         {
+
             Log.logLevel = LogLevel.ALL;
             this.addGUIEntity(new Diagnostics("white", 8, true)).transform.x = 150;
             this.addGlobalSystem(new DebugCollisionSystem(collSystem));
         }
-
         this.addGlobalSystem(new TypingSystem());
 
         this.addEntity(new Earth("earth", 213, 120));
+
         this.addEntity(new GameManager("Game Manager"));
         this.addEntity(new ScoreDisplay("Score", 0, 0, Layers.GUI));
-
         this.addGUIEntity(new RocketSelection(0, this.camera.height - 58, Layers.GUI));
+
+        this.addGUIEntity(new Tutorial("rocket"));
     }
 }
 
