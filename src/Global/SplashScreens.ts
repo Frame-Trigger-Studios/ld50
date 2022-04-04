@@ -6,12 +6,13 @@ import {
     Game,
     GlobalSystem,
     Key,
+    PIXIComponent,
     Scene,
-    TextDisp,
     Timer,
     TimerSystem
 } from "lagom-engine";
 import {MainScene, TutorialState} from "../LD50";
+import TaggedText from "pixi-tagged-text";
 
 export class ScreenCard extends Entity
 {
@@ -110,17 +111,39 @@ export class EndScreen extends Scene
 
         const text =
             this.score === 0 ? "Humanity is extinct.\n"
-                : `But you saved ${this.score} humans!\n...Or ${(this.score/7_900_000_0).toFixed(7)}%.`;
+                             : `But you saved <pop>${this.score}</pop> humans!\n...Or <pop>${(this.score / 7_900_000_0).toFixed(7)}%</pop>.`;
 
-        const xoff = this.score === 0 ? 105 : 80;
+        // This isn't worse than it was. At least it is only 1 number now?
+        // const xoff = this.score === 0 ? 105 : 80;
+        const xoff = -40;
 
-        this.addGUIEntity(new ScreenCard(this.game.getResource("loseScreen").textureSliceFromSheet(), 1))
-            .addComponent(new TextDisp(xoff, 125,
-                `${text}\nTime: ${Math.floor(this.time / 1000)} seconds`,
-                {fill: 0x6e5181, fontSize: 14, fontFamily: "myPixelFont", align: "center", lineHeight: 20}));
+        const textStyles = {
+            default: {fill: 0x6e5181, fontSize: 14, fontFamily: "myPixelFont", align: "center", lineHeight: 20},
+            pop: {fill: 0x6cb9c9, fontSize: 14, fontFamily: "myPixelFont", align: "center", lineHeight: 20}
+        };
+
+        const e = this.addGUIEntity(new ScreenCard(this.game.getResource("loseScreen").textureSliceFromSheet(), 1));
+        // .addComponent(new TextDisp(xoff, 125,
+        // `${text}\nTime: ${Math.floor(this.time / 1000)} seconds`,
+        // {fill: 0x6e5181, fontSize: 14, fontFamily: "myPixelFont", align: "center", lineHeight: 20}));
+
+        const inner = new TaggedText(`${text}\nTime: <pop>${Math.floor(this.time / 1000)}</pop> seconds`, <never>textStyles);
+        e.addComponent(new TaggedTextComp(xoff, 125, inner));
 
         this.addGlobalSystem(new FrameTriggerSystem());
         this.addGlobalSystem(new TimerSystem());
         this.addGlobalSystem(new ClickListener());
+    }
+}
+
+
+class TaggedTextComp extends PIXIComponent<TaggedText>
+{
+    constructor(xOff: number, yOff: number, taggedText: TaggedText)
+    {
+        super(taggedText);
+
+        this.pixiObj.x = xOff;
+        this.pixiObj.y = yOff;
     }
 }
