@@ -98,7 +98,7 @@ export class CooldownTextDisp extends Entity
     onAdded()
     {
         super.onAdded();
-        const cooldownText = this.addComponent(new TextDisp(0, 0, this.start.toString(), {fill: 0x6e5181, fontSize: 16, fontFamily: "myPixelFont"}));
+        const cooldownText = this.addComponent(new TextDisp(0, 0, this.start.toString(), {fill: 0x6d85a5, fontSize: 16, fontFamily: "myPixelFont"}));
         const cooldownState = this.addComponent(new CooldownLength(this.start));
         this.addComponent(new Timer(1000, cooldownState, true)).onTrigger.register(cooldown => {
             cooldownState.cooldown -= 1;

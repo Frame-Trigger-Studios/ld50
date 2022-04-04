@@ -16,13 +16,13 @@ export class Tutorial extends Entity
         switch (MainScene.tutorialState)
         {
             case TutorialState.Rockets:
-                this.addComponent(new RenderRect(2, 181, 123, 25, null, 0x6ceded));
-                this.addComponent(new TextDisp(140, 181, "Launch rockets at\nthe asteroids!", {
+                this.addComponent(new RenderRect(2, 181, 143, 25, null, 0x6ceded));
+                this.addComponent(new TextDisp(160, 181, "Launch rockets at\nthe asteroids!", {
                     fontSize: 10,
                     fontFamily: "myPixelFont",
                     fill: 0x6ceded,
                 }));
-                this.addComponent(new PulseMe(2.5, [Key.KeyQ, Key.KeyR], false, [2, 181, 123, 25]));
+                this.addComponent(new PulseMe(2.5, [Key.KeyQ, Key.KeyR], false, [2, 181, 143, 25]));
                 break;
             case TutorialState.ClickToShoot:
                 this.addComponent(new RenderRect(-100, -100, 1, 1));
@@ -34,13 +34,13 @@ export class Tutorial extends Entity
                 this.addComponent(new PulseMe(2.5, [], true, [-100, -100, 1, 1]));
                 break;
             case TutorialState.Civillians:
-                this.addComponent(new RenderRect(2, 213, 123, 25, null, 0x6ceded));
-                this.addComponent(new TextDisp(140, 213, "Launch escape pods\nto safety!", {
+                this.addComponent(new RenderRect(2, 213, 143, 25, null, 0x6ceded));
+                this.addComponent(new TextDisp(160, 213, "Launch escape pods\nto safety!", {
                     fontSize: 10,
                     fontFamily: "myPixelFont",
                     fill: 0x6ceded,
                 }));
-                this.addComponent(new PulseMe(2.5, [Key.KeyA, Key.KeyF], false, [2, 213, 123, 25]));
+                this.addComponent(new PulseMe(2.5, [Key.KeyA, Key.KeyF], false, [2, 213, 143, 25]));
                 break;
         }
         this.addComponent(new Timer(200, this, false)).onTrigger.register(timerCb);
