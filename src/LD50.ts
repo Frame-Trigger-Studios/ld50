@@ -38,7 +38,7 @@ import bigRocketLaunchSound from "./Sound/rocket_launch_short_big.wav";
 import rocketAvailable from "./Sound/rocket_available.wav";
 
 import {ClickListener, ScreenCard} from "./Global/SplashScreens";
-import youLoseScreen from "./Art/placeholder/game-over.png";
+import youLoseScreen from "./Art/endscreen.png";
 import startScreen from "./Art/startscreen-splash.png";
 import background from "./Art/background.png";
 import mute from "./Art/mute.png";
