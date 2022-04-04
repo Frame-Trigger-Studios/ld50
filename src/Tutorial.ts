@@ -84,7 +84,7 @@ const timerCb = (caller: unknown, data: Entity): void => {
     }
     pulse.txtState = !pulse.txtState;
     text.destroy();
-    data.addComponent(new Timer(200, data, false)).onTrigger.register(timerCb);
+    data.addComponent(new Timer(650, data, false)).onTrigger.register(timerCb);
 };
 
 class PulseMe extends Component

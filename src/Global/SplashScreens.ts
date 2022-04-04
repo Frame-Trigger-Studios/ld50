@@ -24,7 +24,7 @@ export class ScreenCard extends Entity
     {
         super.onAdded();
 
-        this.addComponent(new AnimatedSprite(this.texture, {animationSpeed: 650}));
+        this.addComponent(new AnimatedSprite(this.texture, {animationSpeed: 800}));
 
         // Game reload. Skip to gameplay.
         if (!MainScene.firstLoad && this.clickAction === 0)
