@@ -6,8 +6,10 @@ import {
     Component,
     Entity,
     Game,
-    MathUtil, Mouse,
+    MathUtil,
+    Mouse,
     Rigidbody,
+    ScreenShake,
     SimplePhysicsBody,
     Sprite,
     Util
@@ -221,10 +223,10 @@ export class Explosion extends Entity
                     animationEndEvent: () => this.destroy(), animationSpeed: 60
                 }
             }]));
-        // if (this.texName.startsWith("big")) {
-        //     this.addComponent(new ScreenShake(1, 900));
-        // } else {
-        //     this.addComponent(new ScreenShake(0.5, 200));
-        // }
+        if (this.texName.startsWith("big")) {
+            this.addComponent(new ScreenShake(0.8, 900));
+        } else {
+            this.addComponent(new ScreenShake(0.5, 200));
+        }
     }
 }
