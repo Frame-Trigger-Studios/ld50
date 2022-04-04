@@ -3,6 +3,7 @@ import {GAME_HEIGHT, GAME_WIDTH} from "../LD50";
 import {PassengerShip} from "../Game/Rocket";
 import {EndScreen} from "./SplashScreens";
 import {GameData, GameManager} from "./GameManager";
+import {SoundManager} from "./SoundManager";
 
 
 export class Score extends Component
@@ -104,6 +105,8 @@ export class OffScreenPassenger extends System<[PassengerShip]>
             {
 
                 this.getScene().getEntityWithName("Score")?.getComponent<Score>(Score)?.saveHumans(ship.capacity);
+                (this.getScene().getEntityWithName("audio") as SoundManager)
+                    .playSound("peopleEscape");
 
                 entity.destroy();
             }
