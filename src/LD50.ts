@@ -155,7 +155,7 @@ export class LD50 extends Game
 
     constructor()
     {
-        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x130026});
+        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d001a});
 
         const music = LD50.audioAtlas.load("music", grooveMusic);
         music.loop(true);
