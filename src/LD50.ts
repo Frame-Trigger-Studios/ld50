@@ -39,7 +39,7 @@ import rocketAvailable from "./Sound/rocket_available.wav";
 
 import {ClickListener, ScreenCard} from "./Global/SplashScreens";
 import youLoseScreen from "./Art/placeholder/game-over.png";
-import startScreen from "./Art/startscreen.png";
+import startScreen from "./Art/startscreen-splash.png";
 import background from "./Art/background.png";
 import mute from "./Art/mute.png";
 import bigExplosion2 from "./Art/bigexplosion2.png";
@@ -49,7 +49,7 @@ import smallExplosionAlt from "./Art/smallexplosionalt.png";
 import fireSpr from "./Art/fire.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
-import {BoxPulser, Tutorial} from "./Tutorial";
+import {TutorialMonitor, Tutorial} from "./Tutorial";
 
 
 export enum Layers
@@ -66,7 +66,8 @@ export enum TutorialState
 {
     Rockets,
     ClickToShoot,
-    Civillians,
+    Civilians,
+    ClickToSaveCivs,
     Finished
 }
 
@@ -132,7 +133,7 @@ export class MainScene extends Scene
 
         this.addSystem(new SiloAimer());
         this.addSystem(new SiloShooter());
-        this.addSystem(new BoxPulser());
+        this.addSystem(new TutorialMonitor());
 
         Log.logLevel = LogLevel.NONE;
         if (LD50.debug)
@@ -163,7 +164,7 @@ export class LD50 extends Game
 
     constructor()
     {
-        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x130026});
+        super({width: CANVAS_WIDTH, height: GAME_HEIGHT, resolution: 3, backgroundColor: 0x0d001a});
 
         const music = LD50.audioAtlas.load("music", grooveMusic);
         music.loop(true);

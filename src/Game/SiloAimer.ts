@@ -22,7 +22,9 @@ export class SiloAmmo extends Component
         const arrowTex = this.getScene().game.getResource("launchpad").texture(1, 0);
         this.getEntity().addComponent(new LaunchpadSprite(texture as never));
         this.getEntity().addComponent(new LaunchpadArrow(arrowTex as never));
-        if (MainScene.tutorialState === TutorialState.ClickToShoot) {
+        if (MainScene.tutorialState === TutorialState.ClickToShoot
+            || MainScene.tutorialState === TutorialState.ClickToSaveCivs)
+        {
             this.getScene().addGUIEntity(new Tutorial());
         }
     }
@@ -61,7 +63,8 @@ export class SiloAimer extends System<[SiloThing, Sprite]>
     update(delta: number)
     {
         this.runOnEntities((entity: Entity, silo: SiloThing, sprite: Sprite) => {
-            const mousePos = this.scene.camera.viewToWorld(this.scene.game.mouse.getPosX(), this.scene.game.mouse.getPosY());
+            const mousePos = this.scene.camera.viewToWorld(this.scene.game.mouse.getPosX(),
+                this.scene.game.mouse.getPosY());
 
             const direction = MathUtil.pointDirection(EARTH_X,
                 EARTH_Y,
