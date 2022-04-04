@@ -40,7 +40,7 @@ import smallExplosionAlt from "./Art/smallexplosionalt.png";
 import fireSpr from "./Art/fire.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
-import {BoxPulser, Tutorial} from "./Tutorial";
+import {TutorialMonitor, Tutorial} from "./Tutorial";
 
 
 export enum Layers
@@ -124,7 +124,7 @@ export class MainScene extends Scene
 
         this.addSystem(new SiloAimer());
         this.addSystem(new SiloShooter());
-        this.addSystem(new BoxPulser());
+        this.addSystem(new TutorialMonitor());
 
         Log.logLevel = LogLevel.NONE;
         if (LD50.debug)
