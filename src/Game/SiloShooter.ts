@@ -1,9 +1,10 @@
 import {SiloAmmo, SiloThing} from "./SiloAimer";
-import {Button, Entity, Game, Mouse, System, Timer} from "lagom-engine";
+import {Button, Entity, System, Timer} from "lagom-engine";
 import {Rocket} from "./Rocket";
 import {CompletedRocket} from "./RocketLoader";
 import {CooldownTextDisp, TypedLetters, TypingSystem} from "./RocketSelection";
 import {RocketType} from "../LD50";
+import {SoundManager} from "../Global/SoundManager";
 
 export class SiloShooter extends System<[SiloThing, SiloAmmo]>
 {
@@ -16,7 +17,6 @@ export class SiloShooter extends System<[SiloThing, SiloAmmo]>
             if (this.scene.game.mouse.isButtonReleased(Button.LEFT) && ammo.hasRocket) {
                 this.getScene().addEntity(
                     new Rocket(entity.transform.getGlobalPosition().x, entity.transform.getGlobalPosition().y, ammo.rocket));
-
 
                 const storedRockets = this.getScene().entities
                                           .filter(entity => entity.getComponent(CompletedRocket) != null);
@@ -44,6 +44,12 @@ export class SiloShooter extends System<[SiloThing, SiloAmmo]>
                                 break;
                         }
 
+                        let rocketLaunchSound = "rocketLaunch";
+                        if (completedRocket.rocketType == RocketType.ICBM || completedRocket.rocketType == RocketType.STARSHIP) {
+                            rocketLaunchSound = "bigRocketLaunch";
+                        }
+                        (this.getScene().getEntityWithName("audio") as SoundManager)
+                            .playSound(rocketLaunchSound);
 
                         if (cooldown > 0) {
                             builders = builders.filter(entity => entity != rocketBuilder);

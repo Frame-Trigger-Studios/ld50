@@ -1,6 +1,7 @@
 import {Component, Entity, GlobalSystem, Key, Sprite, TextDisp, Timer} from "lagom-engine";
 import {Layers, RocketType} from "../LD50";
 import {CompletedRocket} from "./RocketLoader";
+import {SoundManager} from "../Global/SoundManager";
 
 const DISABLE_ALPHA = 0.3;
 
@@ -103,6 +104,8 @@ export class CooldownTextDisp extends Entity
         this.addComponent(new Timer(1000, cooldownState, true)).onTrigger.register(cooldown => {
             cooldownState.cooldown -= 1;
             if (cooldownState.cooldown <= 0) {
+                (this.getScene().getEntityWithName("audio") as SoundManager)
+                    .playSound("rocketAvailable");
                 this.destroy();
             } else {
                 cooldownText.pixiObj.text = cooldownState.cooldown.toString();

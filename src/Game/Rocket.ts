@@ -20,6 +20,7 @@ import {OffScreenDestroyable} from "../Systems/OffScreenDestroyer";
 import {DestroyMeNextFrame} from "../Systems/DestroyMeNextFrame";
 import {Asteroid} from "./Asteroid";
 import {Score} from "../Global/Score";
+import {SoundManager} from "../Global/SoundManager";
 
 const SMALL_MISSILE_RADIUS = 20;
 const BIG_MISSILE_RADIUS = 75;
@@ -146,6 +147,7 @@ export class Rocket extends Entity
     explode()
     {
         let texture = "smallexplosion";
+        let sound = "bigExplosion";
         switch (this.rocketType)
         {
             case RocketType.STARSHIP:
@@ -153,16 +155,20 @@ export class Rocket extends Entity
                 break;
             case RocketType.PASSENGER:
                 texture = "smallexplosion2";
+                sound = "smallExplosion";
                 break;
             case RocketType.ICBM:
                 texture = "bigexplosion2";
                 break;
             case RocketType.MISSILE:
                 texture = "smallexplosion";
+                sound = "smallExplosion";
                 break;
         }
 
         this.getScene().addEntity(new Explosion(this, texture));
+        (this.getScene().getEntityWithName("audio") as SoundManager)
+            .playSound(sound);
 
         const missile = this.getComponent<Missile>(Missile);
         if (!missile)
