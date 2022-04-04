@@ -1,15 +1,17 @@
 import {
     AnimatedSprite,
     Component,
-    Entity, FrameTriggerSystem,
+    Entity,
+    FrameTriggerSystem,
     Game,
     GlobalSystem,
     Key,
     Scene,
     TextDisp,
-    Timer, TimerSystem
+    Timer,
+    TimerSystem
 } from "lagom-engine";
-import {GAME_WIDTH, MainScene} from "../LD50";
+import {MainScene, TutorialState} from "../LD50";
 
 export class ScreenCard extends Entity
 {
@@ -56,6 +58,7 @@ class ClickAction extends Component
             // start game
             case 0:
             {
+                MainScene.tutorialState = TutorialState.Rockets;
                 (this.getScene() as MainScene).startGame();
                 this.getEntity().destroy();
                 break;
@@ -81,7 +84,8 @@ export class ClickListener extends GlobalSystem
     {
         this.runOnComponents((clickActions: ClickAction[]) => {
 
-            if (this.scene.game.mouse.isButtonPressed(0) || this.getScene().game.keyboard.isKeyPressed(Key.Space, Key.Enter))
+            if (this.scene.game.mouse.isButtonPressed(0) ||
+                this.getScene().game.keyboard.isKeyPressed(Key.Space, Key.Enter))
             {
                 for (const action of clickActions)
                 {
@@ -104,7 +108,8 @@ export class EndScreen extends Scene
     {
         super.onAdded();
         this.addGUIEntity(new ScreenCard(this.game.getResource("loseScreen").textureSliceFromSheet(), 1))
-            .addComponent(new TextDisp(70, 30, `Humans "saved": ${this.score}\nElapsed time: ${Math.floor(this.time/1000)} seconds`,
+            .addComponent(new TextDisp(70, 30,
+                `Humans "saved": ${this.score}\nElapsed time: ${Math.floor(this.time / 1000)} seconds`,
                 {fill: 0xffffff, fontSize: 10}));
 
         this.addGlobalSystem(new FrameTriggerSystem());
