@@ -1,6 +1,7 @@
-import {Component, Entity, Game, MathUtil, Mouse, Sprite, System,} from "lagom-engine";
-import {EARTH_X, EARTH_Y, RocketType} from "../LD50";
+import {Component, Entity, MathUtil, Sprite, System,} from "lagom-engine";
+import {EARTH_X, EARTH_Y, MainScene, RocketType, TutorialState} from "../LD50";
 import {LaunchpadArrow, LaunchpadSprite} from "./RocketSelection";
+import {Tutorial} from "../Tutorial";
 
 export class SiloThing extends Component
 {
@@ -21,6 +22,9 @@ export class SiloAmmo extends Component
         const arrowTex = this.getScene().game.getResource("launchpad").texture(1, 0);
         this.getEntity().addComponent(new LaunchpadSprite(texture as never));
         this.getEntity().addComponent(new LaunchpadArrow(arrowTex as never));
+        if (MainScene.tutorialState === TutorialState.ClickToShoot) {
+            this.getScene().addGUIEntity(new Tutorial());
+        }
     }
 
     removeRocket()

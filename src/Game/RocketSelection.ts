@@ -82,6 +82,35 @@ export class PreviewLettersTextDisp extends Entity
     }
 }
 
+class CooldownLength extends Component {
+    constructor(public cooldown:number) {
+        super();
+    }
+}
+
+export class CooldownTextDisp extends Entity
+{
+    constructor(x: number, y: number, depth: number, readonly start: number)
+    {
+        super("PreviewLettersTextDisp", x, y, depth);
+    }
+
+    onAdded()
+    {
+        super.onAdded();
+        const cooldownText = this.addComponent(new TextDisp(0, 0, this.start.toString(), {fill: 0x6d85a5, fontSize: 16, fontFamily: "myPixelFont"}));
+        const cooldownState = this.addComponent(new CooldownLength(this.start));
+        this.addComponent(new Timer(1000, cooldownState, true)).onTrigger.register(cooldown => {
+            cooldownState.cooldown -= 1;
+            if (cooldownState.cooldown <= 0) {
+                this.destroy();
+            } else {
+                cooldownText.pixiObj.text = cooldownState.cooldown.toString();
+            }
+        });
+    }
+}
+
 export class TypedLetters extends Component
 {
     constructor(public pattern: string, public typed: string)
