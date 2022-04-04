@@ -40,7 +40,8 @@ import smallExplosionAlt from "./Art/smallexplosionalt.png";
 import fireSpr from "./Art/fire.png";
 import {SoundManager} from "./Global/SoundManager";
 import WebFont from "webfontloader";
-import {TutorialMonitor, Tutorial} from "./Tutorial";
+import {Tutorial, TutorialMonitor} from "./Tutorial";
+import {ShrinkAndRun, TriggerShrink} from "./Game/Rocket";
 
 
 export enum Layers
@@ -119,6 +120,8 @@ export class MainScene extends Scene
         this.addSystem(new DestroySystem());
         this.addSystem(new RocketLoaderSystem());
         this.addSystem(new OffScreenPassenger());
+        this.addSystem(new TriggerShrink());
+        this.addSystem(new ShrinkAndRun());
         this.addGlobalSystem(new ScreenShaker(EARTH_X, EARTH_Y));
         const collSystem = this.addGlobalSystem(new DiscreteRbodyCollisionSystem(matrix));
 
