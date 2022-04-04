@@ -107,10 +107,17 @@ export class EndScreen extends Scene
     onAdded()
     {
         super.onAdded();
+
+        const text =
+            this.score === 0 ? "Humanity is extinct.\n"
+                : `But you saved ${this.score} humans!\n...Or ${(this.score/7_900_000_0).toFixed(7)}%.`;
+
+        const xoff = this.score === 0 ? 105 : 80;
+
         this.addGUIEntity(new ScreenCard(this.game.getResource("loseScreen").textureSliceFromSheet(), 1))
-            .addComponent(new TextDisp(70, 30,
-                `Humans "saved": ${this.score}\nElapsed time: ${Math.floor(this.time / 1000)} seconds`,
-                {fill: 0xffffff, fontSize: 10}));
+            .addComponent(new TextDisp(xoff, 125,
+                `${text}\nTime: ${Math.floor(this.time / 1000)} seconds`,
+                {fill: 0x6e5181, fontSize: 14, fontFamily: "myPixelFont", align: "center", lineHeight: 20}));
 
         this.addGlobalSystem(new FrameTriggerSystem());
         this.addGlobalSystem(new TimerSystem());
